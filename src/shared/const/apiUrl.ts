@@ -4,7 +4,7 @@ interface IApiUrl {
 }
 
 export const apiUrl: IApiUrl = {
-  baseUrl: "http://130.193.45.106:8080/api",
+  baseUrl: "http://51.250.36.221:8080/api",
   auth: {
     login: "/login",
     register: "/register",
