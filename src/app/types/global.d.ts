@@ -5,7 +5,8 @@ declare module "*.scss" {
   const classNames: IClassNames;
   export = classNames;
 }
-
+declare module "mui-datatables";
+  
 declare module "*.module.css" {
   interface IClassNames {
     [className: string]: string;

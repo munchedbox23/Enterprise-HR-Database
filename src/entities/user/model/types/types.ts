@@ -14,11 +14,7 @@ export interface IUserAuthWithoutRole extends IUser {
 
 export interface IUserAuth {
   success: boolean;
-  user: {
-    email: string;
-    name: string;
-    role: string;
-  };
+  user: IUserWithRole;
 }
 
 export interface IUserResponse extends IUserAuth {

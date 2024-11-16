@@ -27,7 +27,7 @@ export const LogoutUserButton: FC = () => {
   };
 
   return (
-    <Button variant="contained" color="secondary" onClick={handleLogout}>
+    <Button sx={{ color: "#f5ba1a", borderColor: "#f5ba1a" }} variant="outlined" color="secondary" onClick={handleLogout}>
       <Typography variant="button">Выход</Typography>
     </Button>
   );

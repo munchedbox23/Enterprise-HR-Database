@@ -30,6 +30,7 @@
     "@babel/preset-typescript": "^7.25.7",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^6.1.7",
     "@mui/material": "^6.1.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
@@ -38,6 +39,7 @@
     "@types/babel__core": "^7.20.5",
     "@types/circular-dependency-plugin": "^5.0.8",
     "@types/gh-pages": "^6.1.0",
+    "@types/mui-datatables": "^4.3.12",
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
@@ -54,7 +56,9 @@
     "gh-pages": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
     "material-react-table": "^3.0.1",
+    "material-table": "^2.0.6",
     "mini-css-extract-plugin": "^2.9.1",
+    "mui-datatables": "^4.3.0",
     "react-router-dom": "^6.28.0",
     "react-text-mask": "^5.5.0",
     "style-loader": "^4.0.0",
@@ -66,6 +70,7 @@
     "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
     "@mui/styled-engine-sc": "^6.1.2",
     "@reduxjs/toolkit": "^2.2.7",
     "react": "^18.3.1",

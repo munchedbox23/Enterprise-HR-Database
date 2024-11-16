@@ -1,4 +1,3 @@
-import { RegistrationForm } from "@/features/authorization/registration";
 import { useLocation } from "react-router-dom";
 import { AuthForm } from "@/widgets/AuthForm";
 

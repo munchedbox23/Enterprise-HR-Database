@@ -5,11 +5,18 @@ import { OnlyAuth, OnlyUnAuth } from "../ui/WithProtectedRoute";
 import { AuthorizationPage } from "@/pages/AuthorizationPage";
 import { AuthLayout } from "@/app/layouts/AuthLayout";
 import { MainLayout } from "@/app/layouts/Mainlayout";
+import { EmployeesPage } from "@/pages/EmployeesPage";
 
 export const router = createBrowserRouter([
   {
     path: appRoutes.home(),
-    element: <MainLayout />,
+    element: <OnlyAuth component={<MainLayout />} />,
+    children: [
+      {
+        index: true,
+        element: <OnlyAuth component={<EmployeesPage />} />,
+      },
+    ],
   },
   {
     path: appRoutes.auth(),
