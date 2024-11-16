@@ -34,7 +34,7 @@ export const fetchWithRefresh = async <T>(
     const res = await request<T>(url, options);
     return res;
   } catch (err: unknown) {
-    if ((err as TTokenError).message === "jwt expired") {
+    if ((err as TTokenError).message === "Token is expired") {
       const refreshData = await refreshToken();
       if (!refreshData.success) {
         return Promise.reject(refreshData);

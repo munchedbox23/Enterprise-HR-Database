@@ -1,5 +1,5 @@
 export type TTokenError = {
-  success: false;
+  code: string;
   message: string | null;
 };
 

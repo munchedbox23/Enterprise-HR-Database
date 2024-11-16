@@ -1,4 +1,4 @@
-import { Button, Box } from "@mui/material";
+import { Button, Box, CircularProgress } from "@mui/material";
 import { Email, Lock, Person } from "@mui/icons-material";
 import { Input } from "@/shared/ui/Input";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
@@ -16,7 +16,7 @@ export const RegistrationForm = () => {
     role: "employee",
   });
 
-  const [register] = useRegisterMutation();
+  const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -103,7 +103,8 @@ export const RegistrationForm = () => {
         fullWidth
         sx={{ mt: 2, color: "#f5ba1a", borderColor: "#f5ba1a" }}
       >
-        Зарегистрироваться
+        {isLoading && <CircularProgress size={24} sx={{ marginRight: 1 }} />}
+        {!isLoading && "Зарегистрироваться"}
       </Button>
     </Box>
   );

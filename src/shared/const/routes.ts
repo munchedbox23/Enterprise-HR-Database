@@ -2,10 +2,11 @@ export enum AppRoutes {
   AUTH = "authorization",
   EMPLOYEES = "employees",
   VACATIONS = "vacations",
-  BUSINESS_TRIPS = "business-trips",
-  LABOR_CONTRACTS = "labor-contracts",
+  EVENT = "events",
+  PAYROLL = "payroll",
   STAFFING = "staffing",
   ATTENDANCE = "attendance",
+  DEPARTMENT = "department",
   NOT_FOUND = "*",
 }
 
@@ -14,19 +15,21 @@ export const getEmployees = () => `${AppRoutes.EMPLOYEES}`;
 export const getRouteNotFound = () => `${AppRoutes.NOT_FOUND}`;
 export const getRouteHome = () => `/`;
 export const getRouteVacations = () => `${AppRoutes.VACATIONS}`;
-export const getRouteBusinessTrips = () => `${AppRoutes.BUSINESS_TRIPS}`;
-export const getRouteLaborContracts = () => `${AppRoutes.LABOR_CONTRACTS}`;
+export const getRouteEvents = () => `${AppRoutes.EVENT}`;
+export const getRoutePayroll = () => `${AppRoutes.PAYROLL}`;
 export const getRouteStaffing = () => `${AppRoutes.STAFFING}`;
 export const getRouteAttendance = () => `${AppRoutes.ATTENDANCE}`;
+export const getRouteDepartment = () => `${AppRoutes.DEPARTMENT}`;
 
 export const appRoutes = {
   home: getRouteHome,
   auth: getRouteAuth,
   employees: getEmployees,
   vacations: getRouteVacations,
-  businessTrips: getRouteBusinessTrips,
-  laborContracts: getRouteLaborContracts,
+  events: getRouteEvents,
+  payroll: getRoutePayroll,
   staffing: getRouteStaffing,
   attendance: getRouteAttendance,
+  department: getRouteDepartment,
   notFound: getRouteNotFound,
 };

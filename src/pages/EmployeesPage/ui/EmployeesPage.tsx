@@ -1,19 +1,20 @@
 import { Table } from "@/widgets/Table";
-import React from "react";
+import { useGetEmployeesQuery } from "@/entities/employee";
+import { Hourglass } from "@/shared/ui/Hourglass";
 
 export const EmployeesPage = () => {
-
-  const [data, setData] = React.useState([
-    { name: 'John', age: 25, country: 'USA' },
-    { name: 'Anna', age: 22, country: 'Sweden' },
-    { name: 'Mike', age: 30, country: 'Canada' },
-    // Добавьте больше данных по необходимости
-  ]);
+  const { data = [], isLoading } = useGetEmployeesQuery();
 
   const columns = [
-    { name: "name", label: "Имя" },
-    { name: "age", label: "Возраст" },
-    { name: "country", label: "Страна" },
+    { name: "IdСотрудника", label: "ID Сотрудника" },
+    { name: "КодОтдела", label: "Код Отдела" },
+    { name: "ФИО", label: "ФИО" },
+    { name: "Должность", label: "Должность" },
+    { name: "Стаж", label: "Стаж" },
+    { name: "КонтактныйТелефон", label: "Контактный Телефон" },
+    { name: "ЗаработнаяПлата", label: "Заработная Плата" },
+    { name: "УровеньОбразования", label: "Уровень Образования" },
   ];
-  return <Table data={data} columns={columns} />;
+
+  return isLoading ? <Hourglass /> : <Table data={data} columns={columns} />;
 };

@@ -10,33 +10,20 @@ import {
 } from "@mui/material";
 import { AccountPopoverFooter } from "@toolpad/core/Account";
 import { LogoutUserButton } from "@/features/authorization/logout/ui/LogoutUserButton";
-
-export interface Account {
-  id: number;
-  name: string;
-  email: string;
-  color: string;
-}
-
-export const accounts: Account[] = [
-  {
-    id: 1,
-    name: "Bharat MUI",
-    email: "bharat@mui.com",
-    color: "#8B4513",
-  },
-];
+import { useAppSelector } from "@/app/providers/StoreProvider";
 
 export function SidebarFooterAccountPopover() {
+  const user = useAppSelector((store) => store.user.user);
+
   return (
-    <Stack direction="column">
-      <Typography variant="body2" mx={2} mt={1}>
-        Аккаунты
-      </Typography>
-      <MenuList>
-        {accounts.map((account) => (
+    user && (
+      <Stack direction="column">
+        <Typography variant="body2" mx={2} mt={1}>
+          Аккаунты
+        </Typography>
+        <MenuList>
           <MenuItem
-            key={account.id}
+            key={user?.name}
             component="button"
             sx={{
               justifyContent: "flex-start",
@@ -50,12 +37,12 @@ export function SidebarFooterAccountPopover() {
                   width: 32,
                   height: 32,
                   fontSize: "0.95rem",
-                  bgcolor: account.color,
+                  bgcolor: "#8B4513",
                 }}
                 src={""}
-                alt={account.name ?? ""}
+                alt={user?.name ?? ""}
               >
-                {account.name[0]}
+                {user?.name[0]}
               </Avatar>
             </ListItemIcon>
             <ListItemText
@@ -65,18 +52,18 @@ export function SidebarFooterAccountPopover() {
                 alignItems: "flex-start",
                 width: "100%",
               }}
-              primary={account.name}
-              secondary={account.email}
+              primary={user?.name}
+              secondary={user?.email}
               primaryTypographyProps={{ variant: "body2" }}
               secondaryTypographyProps={{ variant: "caption" }}
             />
           </MenuItem>
-        ))}
-      </MenuList>
-      <Divider />
-      <AccountPopoverFooter>
-        <LogoutUserButton />
-      </AccountPopoverFooter>
-    </Stack>
+        </MenuList>
+        <Divider />
+        <AccountPopoverFooter>
+          <LogoutUserButton />
+        </AccountPopoverFooter>
+      </Stack>
+    )
   );
 }
