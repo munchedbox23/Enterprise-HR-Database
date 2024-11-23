@@ -6,7 +6,7 @@ import { Suspense } from "react";
 export const AuthLayout = () => {
   return (
     <Container
-      maxWidth="xs"
+      maxWidth="md"
       sx={{
         display: "flex",
         flexDirection: "column",
