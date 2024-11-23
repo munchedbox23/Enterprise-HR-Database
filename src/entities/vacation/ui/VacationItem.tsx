@@ -1,11 +1,11 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Card, CardContent, Typography, Divider } from "@mui/material";
 import { Vacation } from "../model/types";
 import { calculateDaysBetween } from "../model/calculateDaysBetween";
 
-export const VacationItem: React.FC<{ vacation: Vacation }> = ({
-  vacation,
-}) => {
+export const VacationItem: React.FC<
+  PropsWithChildren<{ vacation: Vacation }>
+> = ({ vacation, children }) => {
   return (
     <Card
       variant="outlined"
@@ -58,6 +58,7 @@ export const VacationItem: React.FC<{ vacation: Vacation }> = ({
         <Typography variant="body2" color="text.secondary">
           Тип отпуска: {vacation.Тип}
         </Typography>
+        {children}
       </CardContent>
     </Card>
   );

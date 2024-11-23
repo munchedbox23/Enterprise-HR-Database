@@ -1,16 +1,19 @@
 import { Button } from "@mui/material";
 import { ModalWithOverlay } from "@/shared/ui/Modal";
-import { FC, PropsWithChildren } from "react";
-import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
+import { PropsWithChildren, useState } from "react";
 import { useAppSelector } from "@/app/providers/StoreProvider";
 
-export const CreateAnEntity: FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({ title, children }) => {
-  const { isOpen, openModal, closeModal } = useModalContext();
+export const EditAnEntity = ({
+  title,
+  children,
+}: PropsWithChildren<{
+  title: string;
+}>) => {
+  const [isOpen, setIsOpen] = useState(false);
   const userDate = useAppSelector((store) => store.user.user);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
   return (
     <>
@@ -26,9 +29,9 @@ export const CreateAnEntity: FC<
           variant="outlined"
           onClick={openModal}
         >
-          {title}
+          Изменить
         </Button>
-      )}
+      )}  
       <ModalWithOverlay title={title} onClose={closeModal} open={isOpen}>
         {children}
       </ModalWithOverlay>

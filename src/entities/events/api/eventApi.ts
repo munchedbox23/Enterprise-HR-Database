@@ -28,10 +28,19 @@ export const eventApi = createApi({
       }),
       invalidatesTags: [{ type: "Event", id: "LIST" }],
     }),
+    updateEvent: builder.mutation<
+      Event,
+      { event: Omit<Event, "НомерСобытия">; id: string }
+    >({
+      query: ({ event, id }) => ({
+        url: `/update/personnel-event/${id}`,
+        method: "PUT",
+        body: JSON.stringify(event),
+      }),
+      invalidatesTags: [{ type: "Event", id: "LIST" }],
+    }),
   }),
 });
 
-export const {
-  useGetEventQuery,
-  useAddEventMutation,
-} = eventApi;
+export const { useGetEventQuery, useAddEventMutation, useUpdateEventMutation } =
+  eventApi;

@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useForm } from "@/shared/lib/hooks/useForm";
 import { SortVacationSelect } from "@/features/vacation/sortVacation";
+import { EditAnEntity } from "@/features/common/EditAnEntity";
+import { UpdateVacationForm } from "@/features/vacation/updateVacation";
 
 export const VacationPage = () => {
   const { data: vacations = [], isLoading } = useGetVacationsQuery();
@@ -30,8 +32,6 @@ export const VacationPage = () => {
   });
 
   const [filteredVacations, setFilteredVacations] = useState(vacations);
-
-  
 
   const handleSearch = () => {
     setSearchParams({
@@ -127,13 +127,22 @@ export const VacationPage = () => {
 
           <GroupOfItem
             items={filteredVacations}
-            renderItem={(vacation) => <VacationItem vacation={vacation} />}
+            renderItem={(vacation) => (
+              <VacationItem vacation={vacation}>
+                <EditAnEntity title="Редактировать отпуск">
+                  <UpdateVacationForm
+                    vacation={vacation}
+                    onSuccess={handleOpenSnackbar}
+                  />
+                </EditAnEntity>
+              </VacationItem>
+            )}
             getKey={(vacation) => vacation.НомерЗаписи}
           />
           <NotificationSnackbar
             open={openSnackbar}
             onClose={handleCloseSnackbar}
-            message="Отпуск успешно создан"
+            message="Запись успешно выполнена"
             severity="success"
           />
         </>

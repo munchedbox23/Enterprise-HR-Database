@@ -52,8 +52,6 @@ export const RegistrationForm = () => {
       console.log(error);
     }
   };
-
-  console.log(formState);
   return (
     <Box
       component="form"

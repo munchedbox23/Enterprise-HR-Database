@@ -29,9 +29,24 @@ export const timeSheetApi = createApi({
         method: "POST",
         body: JSON.stringify(timeSheet),
       }),
-      invalidatesTags: ["TimeSheet"],
+      invalidatesTags: [{ type: "TimeSheet", id: "LIST" }],
+    }),
+    updateTimeSheet: builder.mutation<
+      TimeSheetRecord,
+      { timeSheet: Omit<TimeSheetRecord, "НомерЗаписи">; id: string }
+    >({
+      query: ({ timeSheet, id }) => ({
+        url: `/update/time-sheet/${id}`,
+        method: "PUT",
+        body: JSON.stringify(timeSheet),
+      }),
+      invalidatesTags: [{ type: "TimeSheet", id: "LIST" }],
     }),
   }),
 });
 
-export const { useGetTimeSheetQuery, useAddTimeSheetMutation } = timeSheetApi;
+export const {
+  useGetTimeSheetQuery,
+  useAddTimeSheetMutation,
+  useUpdateTimeSheetMutation,
+} = timeSheetApi;

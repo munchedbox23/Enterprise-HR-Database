@@ -1,10 +1,19 @@
-import React, { useState } from "react";
-import { Card, CardContent, Typography, Button, Collapse } from "@mui/material";
+import React, { useState, PropsWithChildren } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Collapse,
+  Stack,
+} from "@mui/material";
 import { SalaryRecord } from "../model/types";
 import { useGetEmployeesQuery } from "@/entities/employee";
 import { SkeletonItem } from "@/shared/ui/Skeleton";
 
-export const SalaryCard: React.FC<{ salary: SalaryRecord }> = ({ salary }) => {
+export const SalaryCard: React.FC<
+  PropsWithChildren<{ salary: SalaryRecord }>
+> = ({ salary, children }) => {
   const [showDetails, setShowDetails] = useState(false);
   const { data: employees = [], isLoading } = useGetEmployeesQuery();
 
@@ -32,18 +41,21 @@ export const SalaryCard: React.FC<{ salary: SalaryRecord }> = ({ salary }) => {
           <Typography variant="body1">{`Дата Выплаты: ${salary.ДатаВыплаты}`}</Typography>
           <Typography variant="body1">{`Тип Выплаты: ${salary.ТипВыплаты}`}</Typography>
         </div>
-        <Button
-          onClick={handleToggleDetails}
-          variant="contained"
-          color="primary"
-          sx={{
-            marginLeft: 2,
-            color: "#fff",
-            backgroundColor: "#f5ba1a",
-          }}
-        >
-          {showDetails ? "Скрыть детали" : "Показать подробную детализацию"}
-        </Button>
+        <Stack direction="column" spacing={2}>
+          <Button
+            onClick={handleToggleDetails}
+            variant="contained"
+            color="primary"
+            sx={{
+              marginLeft: 2,
+              color: "#fff",
+              backgroundColor: "#f5ba1a",
+            }}
+          >
+            {showDetails ? "Скрыть детали" : "Показать подробную детализацию"}
+          </Button>
+          {children}
+        </Stack>
       </CardContent>
       <Collapse in={showDetails}>
         <CardContent>

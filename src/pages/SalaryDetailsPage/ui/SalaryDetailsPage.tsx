@@ -13,6 +13,8 @@ import { useSearchParams } from "react-router-dom";
 import { useForm } from "@/shared/lib/hooks/useForm";
 import { useEffect, useState } from "react";
 import { SortSalarySelect } from "@/features/salary/sortSalary";
+import { EditAnEntity } from "@/features/common/EditAnEntity";
+import { UpdateSalaryForm } from "@/features/salary/updateSalary";
 
 export const SalaryDetailsPage = () => {
   const { data: salary = [], isLoading } = useGetSalaryQuery();
@@ -129,7 +131,16 @@ export const SalaryDetailsPage = () => {
           <GroupOfItem
             direction="column"
             items={filteredSalary}
-            renderItem={(salary) => <SalaryCard salary={salary} />}
+            renderItem={(salary) => (
+              <SalaryCard salary={salary}>
+                <EditAnEntity title="Редактировать выплату">
+                  <UpdateSalaryForm
+                    salary={salary}
+                    onSuccess={handleOpenSnackbar}
+                  />
+                </EditAnEntity>
+              </SalaryCard>
+            )}
             getKey={(salary) => salary.НомерЗаписи}
             width="60%"
           />
@@ -137,7 +148,7 @@ export const SalaryDetailsPage = () => {
             open={openSnackbar}
             onClose={handleCloseSnackbar}
             severity="success"
-            message="Выплата успешно добавлена!"
+            message="Операция выполнена успешно!"
           />
         </>
       )}

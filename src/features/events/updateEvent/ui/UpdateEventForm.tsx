@@ -2,24 +2,31 @@ import { BaseForm } from "@/shared/ui/BaseForm";
 import { useForm } from "@/shared/lib/hooks/useForm";
 import { Input } from "@/shared/ui/Input";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
-import { Event } from "@/entities/events/model/types";
-import { useAddEventMutation } from "@/entities/events/api/eventApi";
+import { useUpdateEventMutation } from "@/entities/events/api/eventApi";
 import { useGetEmployeesQuery } from "@/entities/employee";
-import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
-import { validateDate, validateEventType } from "../model/validationEventForm";
+import {
+  validateDate,
+  validateEventType,
+} from "../../createEvent/model/validationEventForm";
+import { EventValueTypes, Event } from "@/entities/events/model/types";
 
-export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
+export const UpdateEventForm = ({
+  event,
+  onSuccess,
+}: {
+  event: EventValueTypes;
+  onSuccess: () => void;
+}) => {
   const { formState, handleChange } = useForm<Omit<Event, "НомерСобытия">>({
-    IdСотрудника: undefined,
-    ДатаСобытия: new Date().toISOString().split("T")[0],
-    ТипСобытия: "",
-    Комментарий: "",
+    IdСотрудника: event[1],
+    ДатаСобытия: event[3],
+    ТипСобытия: event[2],
+    Комментарий: event[4],
   });
 
-  const [addEvent, { isLoading }] = useAddEventMutation();
+  const [updateEvent, { isLoading }] = useUpdateEventMutation();
   const { data: employees = [] } = useGetEmployeesQuery();
-  const { closeModal } = useModalContext();
 
   const { errors, validateForm } = useValidation<
     Omit<Event, "НомерСобытия" | "IdСотрудника" | "Комментарий">
@@ -32,11 +39,10 @@ export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
     e.preventDefault();
     if (!validateForm(formState)) return;
     try {
-      await addEvent({
-        ...formState,
-        IdСотрудника: Number(formState.IdСотрудника),
+      await updateEvent({
+        event: { ...formState, IdСотрудника: Number(formState.IdСотрудника) },
+        id: event[0].toString(),
       });
-      closeModal();
       onSuccess();
     } catch (error) {
       console.log(error);
@@ -45,7 +51,7 @@ export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return (
     <BaseForm
-      buttonText="Создать событие"
+      buttonText="Обновить событие"
       isLoading={isLoading}
       onSubmit={handleSubmit}
     >

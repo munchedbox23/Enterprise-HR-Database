@@ -29,9 +29,24 @@ export const salaryApi = createApi({
         method: "POST",
         body: JSON.stringify(salary),
       }),
-      invalidatesTags: ["Salary"],
+      invalidatesTags: [{ type: "Salary", id: "LIST" }],
+    }),
+    updateSalary: builder.mutation<
+      SalaryRecord,
+      { salary: Omit<SalaryRecord, "НомерЗаписи">; id: string }
+    >({
+      query: ({ salary, id }) => ({
+        url: `/update/payroll-sheet/${id}`,
+        method: "PUT",
+        body: JSON.stringify(salary),
+      }),
+      invalidatesTags: [{ type: "Salary", id: "LIST" }],
     }),
   }),
 });
 
-export const { useGetSalaryQuery, useAddSalaryMutation } = salaryApi;
+export const {
+  useGetSalaryQuery,
+  useAddSalaryMutation,
+  useUpdateSalaryMutation,
+} = salaryApi;

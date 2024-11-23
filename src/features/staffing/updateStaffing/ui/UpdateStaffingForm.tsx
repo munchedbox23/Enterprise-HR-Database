@@ -2,48 +2,51 @@ import { BaseForm } from "@/shared/ui/BaseForm";
 import { useForm } from "@/shared/lib/hooks/useForm";
 import { Input } from "@/shared/ui/Input";
 import {
-  StaffingRecord,
-  useAddStaffingMutation,
+  StaffingValueTypes,
+  useUpdateStaffingMutation,
   useGetDepartmentQuery,
+  StaffingRecord,
 } from "@/entities/staffing";
-import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { useGetEmployeesQuery } from "@/entities/employee";
 
-export const CreateStaffingForm = ({
-  onStaffingAdded,
+export const UpdateStaffingForm = ({
+  staffingRecord,
+  onStaffingUpdated,
 }: {
-  onStaffingAdded: () => void;
+  staffingRecord: StaffingValueTypes;
+  onStaffingUpdated: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<StaffingRecord, "IdРасписания">
   >({
-    КодОтдела: "",
-    Должность: "",
-    КоличествоЕдиниц: undefined,
-    Оклад: 35000,
+    КодОтдела: staffingRecord[1],
+    Должность: staffingRecord[2],
+    КоличествоЕдиниц: staffingRecord[3],
+    Оклад: staffingRecord[4],
   });
 
-  const { closeModal } = useModalContext();
-  const [addStaffing, { isLoading }] = useAddStaffingMutation();
+  const [updateStaffing, { isLoading }] = useUpdateStaffingMutation();
   const { data: departments = [] } = useGetDepartmentQuery();
   const { data: employees = [] } = useGetEmployeesQuery();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    await addStaffing({
-      ...formState,
-      Оклад: Number(formState.Оклад),
-      КоличествоЕдиниц: Number(formState.КоличествоЕдиниц),
+    await updateStaffing({
+      staffing: {
+        ...formState,
+        Оклад: Number(formState.Оклад),
+        КоличествоЕдиниц: Number(formState.КоличествоЕдиниц),
+      },
+      id: staffingRecord[0].toString(),
     });
-    closeModal();
-    onStaffingAdded();
+    onStaffingUpdated();
   };
 
   return (
     <BaseForm
-      buttonText="Создать расписание"
+      buttonText="Обновить расписание"
       isLoading={isLoading}
       onSubmit={handleSubmit}
     >
@@ -63,14 +66,18 @@ export const CreateStaffingForm = ({
       <CustomSelect
         label="Должность"
         name="Должность"
-        options={
-          employees?.map((employee) => ({
-            value: employee.Должность.toString(),
-            label: employee.Должность.toString(),
-            key: employee.Должность
-          }))
+        options={employees?.map((employee) => ({
+          value: employee.Должность.toString(),
+          label: employee.Должность.toString(),
+          key: employee.Должность,
+        }))}
+        value={
+          employees?.some(
+            (employee) => employee.Должность === formState.Должность
+          )
+            ? formState.Должность
+            : ""
         }
-        value={formState.Должность}
         onChange={handleChange}
       />
       <Input

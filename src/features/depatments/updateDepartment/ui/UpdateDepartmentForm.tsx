@@ -1,29 +1,29 @@
 import { BaseForm } from "@/shared/ui/BaseForm";
 import { useForm } from "@/shared/lib/hooks/useForm";
-import { DepartmentRecord } from "@/entities/staffing";
 import { Input } from "@/shared/ui/Input";
-import { useAddDepartmentMutation } from "../../api/departmentApi";
-import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
-import MaskedInput from "react-text-mask";
-import { validateDepartmentName } from "../model/validateDepartmentForm";
-import { useGetDepartmentQuery } from "@/entities/staffing";
+import { useUpdateDepartmentMutation } from "@/features/depatments/api/departmentApi";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
+import { DepartmentRecord, useGetDepartmentQuery } from "@/entities/staffing";
 import { validatePhoneNumber } from "@/shared/lib/validate";
+import { DepartmentValueTypes } from "@/entities/staffing";
+import MaskedInput from "react-text-mask";
+import { validateDepartmentName } from "../../createDepartment/model/validateDepartmentForm";
 
-export const CreateDepartmentForm = ({
-  onDepartmentAdded,
+export const UpdateDepartmentForm = ({
+  department,
+  onSuccess,
 }: {
-  onDepartmentAdded: () => void;
+  department: DepartmentValueTypes;
+  onSuccess: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<DepartmentRecord, "КодОтдела">
   >({
-    НазваниеОтдела: "",
-    КонтактныйТелефон: "",
+    НазваниеОтдела: department[1],
+    КонтактныйТелефон: department[2],
   });
 
-  const [addDepartment, { isLoading }] = useAddDepartmentMutation();
-  const { closeModal } = useModalContext();
+  const [updateDepartment, { isLoading }] = useUpdateDepartmentMutation();
   const { data: departments = [] } = useGetDepartmentQuery();
 
   const existingPhones = departments.map(
@@ -42,16 +42,19 @@ export const CreateDepartmentForm = ({
     e.preventDefault();
     if (!validateForm(formState)) return;
     try {
-      await addDepartment(formState);
-      closeModal();
-      onDepartmentAdded();
+      await updateDepartment({
+        department: { ...formState },
+        id: department[0].toString(),
+      });
+      onSuccess();
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <BaseForm
-      buttonText="Создать"
+      buttonText="Обновить"
       isLoading={isLoading}
       onSubmit={handleSubmit}
     >

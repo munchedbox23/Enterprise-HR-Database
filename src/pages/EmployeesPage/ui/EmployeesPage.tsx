@@ -1,10 +1,12 @@
 import { Table } from "@/widgets/Table";
-import { useGetEmployeesQuery } from "@/entities/employee";
+import { useGetEmployeesQuery, EmployeeValueTypes } from "@/entities/employee";
 import { Hourglass } from "@/shared/ui/Hourglass";
 import { CreateAnEntity } from "@/features/common/CreateAnEntity";
 import { CreateAnEmployeeForm } from "@/features/employee/createAnEmployee";
 import { useSnackbar } from "@/shared/lib/hooks/useSnackbar";
 import { NotificationSnackbar } from "@/shared/ui/NotificationSnackbar.tsx";
+import { EditAnEntity } from "@/features/common/EditAnEntity";
+import { UpdateAnEmployeeForm } from "@/features/employee/updateAnEmployee";
 
 export const EmployeesPage = () => {
   const { data = [], isLoading } = useGetEmployeesQuery();
@@ -20,6 +22,22 @@ export const EmployeesPage = () => {
     { name: "КонтактныйТелефон", label: "Контактный Телефон" },
     { name: "ЗаработнаяПлата", label: "Заработная Плата" },
     { name: "УровеньОбразования", label: "Уровень Образования" },
+    {
+      name: "Опции",
+      options: {
+        filter: true,
+        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+          return (
+            <EditAnEntity title="Редактировать сотрудника">
+              <UpdateAnEmployeeForm
+                employee={tableMeta.rowData as EmployeeValueTypes}
+                onEmployeeUpdated={handleOpenSnackbar}
+              />
+            </EditAnEntity>
+          );
+        },
+      },
+    },
   ];
 
   return (
@@ -35,7 +53,7 @@ export const EmployeesPage = () => {
           <NotificationSnackbar
             open={openSnackbar}
             onClose={handleCloseSnackbar}
-            message="Сотрудник успешно добавлен!"
+            message="Процесс успешно завершен!"
             severity="success"
           />
         </>
