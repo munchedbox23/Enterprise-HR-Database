@@ -5,7 +5,6 @@ import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { Event } from "@/entities/events/model/types";
 import { useAddEventMutation } from "@/entities/events/api/eventApi";
 import { useGetEmployeesQuery } from "@/entities/employee";
-import { TextField } from "@mui/material";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 import { validateDate, validateEventType } from "../model/validationEventForm";
@@ -81,7 +80,7 @@ export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
         error={!!errors.ТипСобытия}
         helperText={errors.ТипСобытия}
       />
-      <TextField
+      <Input
         multiline
         rows={4}
         label="Комментарий"

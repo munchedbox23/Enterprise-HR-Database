@@ -1,4 +1,4 @@
-  import { Table } from "@/widgets/Table";
+import { Table } from "@/widgets/Table";
 import { useGetEmployeesQuery } from "@/entities/employee";
 import { Hourglass } from "@/shared/ui/Hourglass";
 import { CreateAnEntity } from "@/features/common/CreateAnEntity";

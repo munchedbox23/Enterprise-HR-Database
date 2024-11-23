@@ -8,6 +8,7 @@ import { NAVIGATION } from "@/shared/const/navigation";
 import { useAppSelector } from "@/app/providers/StoreProvider";
 import { ModalProvider } from "@/app/providers/ModalProvider/ui/ModalProvider";
 import { Hourglass } from "@/shared/ui/Hourglass";
+import { Box } from "@mui/material";
 
 export const MainLayout = () => {
   const userDate = useAppSelector((store) => store.user.user);
@@ -56,7 +57,9 @@ export const MainLayout = () => {
       >
         <ModalProvider>
           <Suspense fallback={<Hourglass />}>
-            <Outlet />
+            <Box style={{ position: "relative", height: "100%", width: "100%" }}>
+              <Outlet />
+            </Box>
           </Suspense>
         </ModalProvider>
       </DashboardLayout>
