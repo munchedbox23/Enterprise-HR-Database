@@ -35,7 +35,6 @@ export const VacationItem: React.FC<{ vacation: Vacation }> = ({
           gutterBottom
         >
           <span style={{ color: "green" }}>Отпуск №{vacation.НомерЗаписи}</span>{" "}
-          - {vacation.Тип || "Тип не указан"}
         </Typography>
         <Divider />
         <Typography
@@ -55,6 +54,9 @@ export const VacationItem: React.FC<{ vacation: Vacation }> = ({
 
         <Typography variant="body2" color="text.secondary">
           Табельный номер: {vacation.IdСотрудника}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Тип отпуска: {vacation.Тип}
         </Typography>
       </CardContent>
     </Card>
