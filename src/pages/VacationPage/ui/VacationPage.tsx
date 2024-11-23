@@ -12,12 +12,15 @@ import { Filter } from "@/features/common/Filter";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useForm } from "@/shared/lib/hooks/useForm";
+import { SortVacationSelect } from "@/features/vacation/sortVacation";
 
 export const VacationPage = () => {
   const { data: vacations = [], isLoading } = useGetVacationsQuery();
   const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
     useSnackbar();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const { formState, handleChange } = useForm({
     type: searchParams.get("type") || "",
@@ -27,6 +30,8 @@ export const VacationPage = () => {
   });
 
   const [filteredVacations, setFilteredVacations] = useState(vacations);
+
+  
 
   const handleSearch = () => {
     setSearchParams({
@@ -94,7 +99,12 @@ export const VacationPage = () => {
         ))
       ) : (
         <>
-          <Stack direction="row" gap={2}>
+          <Stack
+            direction="row"
+            gap={2}
+            justifyContent="flex-end"
+            sx={{ marginBottom: 2 }}
+          >
             <CreateAnEntity title="Создать отпуск">
               <CreateVacationForm onSuccess={handleOpenSnackbar} />
             </CreateAnEntity>
@@ -109,6 +119,10 @@ export const VacationPage = () => {
                 handleChange={handleChange}
               />
             </Filter>
+            <SortVacationSelect
+              filteredVacations={filteredVacations}
+              setFilteredVacations={setFilteredVacations}
+            />
           </Stack>
 
           <GroupOfItem

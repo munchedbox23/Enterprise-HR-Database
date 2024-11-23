@@ -13,6 +13,7 @@ interface CustomSelectProps {
   value: string;
   options: { value: string; label: string; key: string | number }[];
   onChange: (event: SelectChangeEvent<string>) => void;
+  width?: string;
 }
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -21,12 +22,14 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   value,
   options,
   onChange,
+  width = "100%",
 }) => {
   return (
     <FormControl
       variant="outlined"
       fullWidth
       sx={{
+        width,
         "& .MuiOutlinedInput-root.Mui-focused": {
           "& fieldset": {
             borderColor: "#f5ba1a",

@@ -12,6 +12,7 @@ import { FilterSalaryForm } from "@/features/salary/filterSalary";
 import { useSearchParams } from "react-router-dom";
 import { useForm } from "@/shared/lib/hooks/useForm";
 import { useEffect, useState } from "react";
+import { SortSalarySelect } from "@/features/salary/sortSalary";
 
 export const SalaryDetailsPage = () => {
   const { data: salary = [], isLoading } = useGetSalaryQuery();
@@ -105,7 +106,7 @@ export const SalaryDetailsPage = () => {
         ))
       ) : (
         <>
-          <Stack direction="row" gap={2}>
+          <Stack direction="row" gap={2} justifyContent="flex-end">
             <CreateAnEntity title="Добавить выплату">
               <CreateSalaryForm onSalaryAdded={handleOpenSnackbar} />
             </CreateAnEntity>
@@ -120,6 +121,10 @@ export const SalaryDetailsPage = () => {
                 handleChange={handleChange}
               />
             </Filter>
+            <SortSalarySelect
+              filteredSalaries={filteredSalary}
+              setFilteredSalaries={setFilteredSalary}
+            />
           </Stack>
           <GroupOfItem
             direction="column"
