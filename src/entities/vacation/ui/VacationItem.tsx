@@ -35,7 +35,7 @@ export const VacationItem: React.FC<{ vacation: Vacation }> = ({
           gutterBottom
         >
           <span style={{ color: "green" }}>Отпуск №{vacation.НомерЗаписи}</span>{" "}
-          - {vacation.Тип}
+          - {vacation.Тип || "Тип не указан"}
         </Typography>
         <Divider />
         <Typography

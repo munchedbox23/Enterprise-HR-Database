@@ -7,6 +7,8 @@ import { IUserLogin } from "@/entities/user";
 import { useAppDispatch } from "@/app/providers/StoreProvider";
 import { Email, Lock } from "@mui/icons-material";
 import { Input } from "@/shared/ui/Input";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
+import { validateEmail, validatePassword } from "@/shared/lib/validate";
 
 export const LoginForm = () => {
   const { formState, handleChange } = useForm<IUserLogin>({
@@ -16,10 +18,16 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const { errors, validateForm } = useValidation<IUserLogin>({
+    email: validateEmail,
+    password: validatePassword,
+  });
+
   const [login, { isLoading: isUserLogin }] = useLoginMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm(formState)) return;
     try {
       await login(formState)
         .unwrap()
@@ -54,6 +62,8 @@ export const LoginForm = () => {
         autoComplete="email"
         value={formState.email}
         startAdornment={<Email />}
+        error={!!errors.email}
+        helperText={errors.email}
       />
       <Input
         type="password"
@@ -62,6 +72,8 @@ export const LoginForm = () => {
         onChange={handleChange}
         value={formState.password}
         startAdornment={<Lock />}
+        error={!!errors.password}
+        helperText={errors.password}
       />
       <Button
         type="submit"

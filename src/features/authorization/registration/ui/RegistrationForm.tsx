@@ -3,10 +3,20 @@ import { Email, Lock, Person } from "@mui/icons-material";
 import { Input } from "@/shared/ui/Input";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { useForm } from "@/shared/lib/hooks/useForm";
-import { checkUserAuth, IUserRegister, useRegisterMutation } from "@/entities/user";
+import {
+  checkUserAuth,
+  IUserRegister,
+  useRegisterMutation,
+} from "@/entities/user";
 import { appRoutes } from "@/shared/const/routes";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/app/providers/StoreProvider";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+} from "@/shared/lib/validate";
 
 export const RegistrationForm = () => {
   const { formState, handleChange } = useForm<IUserRegister>({
@@ -20,8 +30,15 @@ export const RegistrationForm = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const { errors, validateForm } = useValidation<Omit<IUserRegister, "role">>({
+    email: validateEmail,
+    name: validateName,
+    password: validatePassword,
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm(formState)) return;
     try {
       await register(formState)
         .unwrap()
@@ -52,47 +69,41 @@ export const RegistrationForm = () => {
         type="text"
         name="name"
         autoComplete="new-name"
-        required
         startAdornment={<Person />}
         value={formState.name}
         onChange={handleChange}
+        error={!!errors.name}
+        helperText={errors.name}
       />
       <Input
         label="Почта"
         type="email"
         name="email"
-        required
         startAdornment={<Email />}
         autoComplete="email"
         value={formState.email}
         onChange={handleChange}
+        error={!!errors.email}
+        helperText={errors.email}
       />
       <Input
         label="Пароль"
         type="password"
         name="password"
-        required
         startAdornment={<Lock />}
         autoComplete="new-password"
         value={formState.password}
         onChange={handleChange}
-      />
-
-      <Input
-        label="Повторите пароль"
-        type="password"
-        name="confirmPassword"
-        autoComplete="new-password"
-        required
-        startAdornment={<Lock />}
+        error={!!errors.password}
+        helperText={errors.password}
       />
       <CustomSelect
         label="Роль"
         name="role"
         value={formState.role}
         options={[
-          { value: "employee", label: "Сотрудник" },
-          { value: "admin", label: "Администратор" },
+          { value: "employee", label: "Сотрудник", key: 1 },
+          { value: "admin", label: "Администратор", key: 2 },
         ]}
         onChange={handleChange}
       />

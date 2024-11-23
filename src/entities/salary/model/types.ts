@@ -1,7 +1,7 @@
 export interface SalaryRecord {
   НомерЗаписи: number;
-  IdСотрудника: number;
+  IdСотрудника?: number;
   ДатаВыплаты: string;
-  Сумма: number | bigint;
+  Сумма?: number | bigint;
   ТипВыплаты: string;
 }

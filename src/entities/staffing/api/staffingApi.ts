@@ -26,7 +26,7 @@ export const staffingApi = createApi({
     }),
     addStaffing: builder.mutation<
       StaffingRecord,
-      Omit<StaffingRecord, "НомерЗаписи">
+      Omit<StaffingRecord, "IdРасписания">
     >({
       query: (staffing) => ({
         url: "/add/staffing-table",

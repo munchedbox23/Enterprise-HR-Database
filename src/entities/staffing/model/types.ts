@@ -2,7 +2,7 @@ export interface StaffingRecord {
   IdРасписания: number;
   КодОтдела: string;
   Должность: string;
-  КоличествоЕдиниц: number;
+  КоличествоЕдиниц?: number;
   Оклад: number | bigint;
 }
 

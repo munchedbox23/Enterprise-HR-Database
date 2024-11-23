@@ -7,6 +7,7 @@ import { useMemo, useState, Suspense } from "react";
 import { NAVIGATION } from "@/shared/const/navigation";
 import { useAppSelector } from "@/app/providers/StoreProvider";
 import { Loader } from "@/shared/ui/Loader";
+import { ModalProvider } from "@/app/providers/ModalProvider/ui/ModalProvider";
 
 export const MainLayout = () => {
   const userDate = useAppSelector((store) => store.user.user);
@@ -53,9 +54,11 @@ export const MainLayout = () => {
         }}
         sx={{ padding: 3 }}
       >
-        <Suspense fallback={<Loader />}>
-          <Outlet />
-        </Suspense>
+        <ModalProvider>
+          <Suspense fallback={<Loader />}>
+            <Outlet />
+          </Suspense>
+        </ModalProvider>
       </DashboardLayout>
     </AppProvider>
   );

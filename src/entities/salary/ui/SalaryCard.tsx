@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, Typography, Button, Collapse } from "@mui/material";
 import { SalaryRecord } from "../model/types";
 import { useGetEmployeesQuery } from "@/entities/employee";
-import { Hourglass } from "@/shared/ui/Hourglass";
+import { SkeletonItem } from "@/shared/ui/Skeleton";
 
 export const SalaryCard: React.FC<{ salary: SalaryRecord }> = ({ salary }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -17,7 +17,7 @@ export const SalaryCard: React.FC<{ salary: SalaryRecord }> = ({ salary }) => {
   };
 
   return isLoading ? (
-    <Hourglass />
+    <SkeletonItem />
   ) : (
     <Card variant="outlined" sx={{ width: "100%", marginBottom: 2 }}>
       <CardContent
@@ -36,7 +36,11 @@ export const SalaryCard: React.FC<{ salary: SalaryRecord }> = ({ salary }) => {
           onClick={handleToggleDetails}
           variant="contained"
           color="primary"
-          sx={{ marginLeft: 2 }}
+          sx={{
+            marginLeft: 2,
+            color: "#fff",
+            backgroundColor: "#f5ba1a",
+          }}
         >
           {showDetails ? "Скрыть детали" : "Показать подробную детализацию"}
         </Button>

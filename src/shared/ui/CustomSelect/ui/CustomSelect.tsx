@@ -11,7 +11,7 @@ interface CustomSelectProps {
   label: string;
   name: string;
   value: string;
-  options: { value: string; label: string }[];
+  options: { value: string; label: string; key: string | number }[];
   onChange: (event: SelectChangeEvent<string>) => void;
 }
 
@@ -27,13 +27,13 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
       variant="outlined"
       fullWidth
       sx={{
-        '& .MuiOutlinedInput-root.Mui-focused': {
-          '& fieldset': {
-            borderColor: '#f5ba1a',
+        "& .MuiOutlinedInput-root.Mui-focused": {
+          "& fieldset": {
+            borderColor: "#f5ba1a",
           },
         },
-        '& .MuiInputLabel-root.Mui-focused': {
-          color: '#f5ba1a',
+        "& .MuiInputLabel-root.Mui-focused": {
+          color: "#f5ba1a",
         },
       }}
     >
@@ -56,7 +56,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
       >
         {options.map((option) => (
           <MenuItem
-            key={option.value}
+            key={option.key}
             value={option.value}
             style={{ width: "100%" }}
           >

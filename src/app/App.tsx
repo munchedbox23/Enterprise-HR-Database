@@ -12,11 +12,7 @@ const App = () => {
     dispatch(checkUserAuth());
   }, [dispatch]);
 
-  return (
-    <AnimatePresence mode="wait">
-      <RouterProvider router={router} />
-    </AnimatePresence>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;
