@@ -24,6 +24,7 @@ export const Table = <T extends object>({
         pagination: true,
         rowsPerPageOptions: [10, 20, 50, 100],
         jumpToPage: true,
+        selectableRows: "none",
         textLabels: {
           pagination: {
             next: "Следующая страница",
