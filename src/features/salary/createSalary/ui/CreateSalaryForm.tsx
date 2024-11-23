@@ -1,4 +1,3 @@
-import { Employee } from "@/entities/employee";
 import { useForm } from "@/shared/lib/hooks/useForm";
 import { BaseForm } from "@/shared/ui/BaseForm";
 import { Input } from "@/shared/ui/Input";
@@ -6,6 +5,12 @@ import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
 import { SalaryRecord, useAddSalaryMutation } from "@/entities/salary";
 import { useGetEmployeesQuery } from "@/entities/employee";
+import {
+  validatePaymentDate,
+  validateAmount,
+} from "../model/validateSalaryForm";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
+import { validateName } from "@/shared/lib/validate";
 
 export const CreateSalaryForm = ({
   onSalaryAdded,
@@ -25,8 +30,17 @@ export const CreateSalaryForm = ({
   const { data: employees = [] } = useGetEmployeesQuery();
   const [addSalary, { isLoading }] = useAddSalaryMutation();
 
+  const { errors, validateForm } = useValidation<
+    Omit<SalaryRecord, "НомерЗаписи" | "IdСотрудника">
+  >({
+    ДатаВыплаты: () => validatePaymentDate(formState.ДатаВыплаты),
+    Сумма: () => validateAmount(formState.Сумма?.toString() || ""),
+    ТипВыплаты: () => validateName(formState.ТипВыплаты),
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm(formState)) return;
     await addSalary({
       ...formState,
       IdСотрудника: Number(formState.IdСотрудника),
@@ -60,6 +74,8 @@ export const CreateSalaryForm = ({
         value={formState.ДатаВыплаты}
         onChange={handleChange}
         fullWidth
+        error={!!errors.ДатаВыплаты}
+        helperText={errors.ДатаВыплаты}
       />
       <Input
         type="number"
@@ -69,6 +85,8 @@ export const CreateSalaryForm = ({
         onChange={handleChange}
         inputProps={{ min: 0 }}
         fullWidth
+        error={!!errors.Сумма}
+        helperText={errors.Сумма}
       />
       <Input
         type="text"
@@ -77,6 +95,8 @@ export const CreateSalaryForm = ({
         value={formState.ТипВыплаты}
         onChange={handleChange}
         fullWidth
+        error={!!errors.ТипВыплаты}
+        helperText={errors.ТипВыплаты}
       />
     </BaseForm>
   );

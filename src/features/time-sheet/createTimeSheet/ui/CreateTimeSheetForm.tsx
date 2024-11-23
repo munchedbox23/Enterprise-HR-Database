@@ -8,6 +8,11 @@ import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { Input } from "@/shared/ui/Input";
 import { useGetEmployeesQuery } from "@/entities/employee";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
+import {
+  validateWorkedHours,
+  validateDate,
+} from "../model/validateTimeSheetForm";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
 
 export const CreateTimeSheetForm = ({
   onSuccess,
@@ -26,8 +31,17 @@ export const CreateTimeSheetForm = ({
   const { data: employees = [] } = useGetEmployeesQuery();
   const { closeModal } = useModalContext();
 
+  const { errors, validateForm } = useValidation<
+    Omit<TimeSheetRecord, "НомерЗаписи" | "Id">
+  >({
+    Дата: () => validateDate(formState.Дата),
+    КоличествоОтработанныхЧасов: () =>
+      validateWorkedHours(formState.КоличествоОтработанныхЧасов),
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm(formState)) return;
     try {
       await addTimeSheet({
         ...formState,
@@ -67,6 +81,8 @@ export const CreateTimeSheetForm = ({
         value={formState.Дата}
         onChange={handleChange}
         fullWidth
+        error={!!errors.Дата}
+        helperText={errors.Дата}
       />
       <Input
         type="number"
@@ -76,6 +92,8 @@ export const CreateTimeSheetForm = ({
         onChange={handleChange}
         inputProps={{ min: 1 }}
         fullWidth
+        error={!!errors.КоличествоОтработанныхЧасов}
+        helperText={errors.КоличествоОтработанныхЧасов}
       />
     </BaseForm>
   );

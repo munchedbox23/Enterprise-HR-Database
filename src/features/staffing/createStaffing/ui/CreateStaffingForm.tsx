@@ -8,6 +8,7 @@ import {
 } from "@/entities/staffing";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
+import { useGetEmployeesQuery } from "@/entities/employee";
 
 export const CreateStaffingForm = ({
   onStaffingAdded,
@@ -25,7 +26,8 @@ export const CreateStaffingForm = ({
 
   const { closeModal } = useModalContext();
   const [addStaffing, { isLoading }] = useAddStaffingMutation();
-  const { data: departments } = useGetDepartmentQuery();
+  const { data: departments = [] } = useGetDepartmentQuery();
+  const { data: employees = [] } = useGetEmployeesQuery();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,13 +60,18 @@ export const CreateStaffingForm = ({
         value={formState.КодОтдела}
         onChange={handleChange}
       />
-      <Input
-        type="text"
+      <CustomSelect
         label="Должность"
         name="Должность"
+        options={
+          employees?.map((employee) => ({
+            value: employee.Должность.toString(),
+            label: employee.Должность.toString(),
+            key: employee.Должность
+          }))
+        }
         value={formState.Должность}
         onChange={handleChange}
-        fullWidth
       />
       <Input
         type="number"

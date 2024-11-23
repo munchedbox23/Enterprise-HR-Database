@@ -6,8 +6,8 @@ import { SidebarFooterAccount } from "@/features/common/SidebarFooterAccount";
 import { useMemo, useState, Suspense } from "react";
 import { NAVIGATION } from "@/shared/const/navigation";
 import { useAppSelector } from "@/app/providers/StoreProvider";
-import { Loader } from "@/shared/ui/Loader";
 import { ModalProvider } from "@/app/providers/ModalProvider/ui/ModalProvider";
+import { Hourglass } from "@/shared/ui/Hourglass";
 
 export const MainLayout = () => {
   const userDate = useAppSelector((store) => store.user.user);
@@ -55,7 +55,7 @@ export const MainLayout = () => {
         sx={{ padding: 3 }}
       >
         <ModalProvider>
-          <Suspense fallback={<Loader />}>
+          <Suspense fallback={<Hourglass />}>
             <Outlet />
           </Suspense>
         </ModalProvider>

@@ -17,6 +17,7 @@ import {
   validateName,
   validatePassword,
 } from "@/shared/lib/validate";
+import MaskedInput from "react-text-mask";
 
 export const RegistrationForm = () => {
   const { formState, handleChange } = useForm<IUserRegister>({
@@ -31,9 +32,9 @@ export const RegistrationForm = () => {
   const dispatch = useAppDispatch();
 
   const { errors, validateForm } = useValidation<Omit<IUserRegister, "role">>({
-    email: validateEmail,
-    name: validateName,
-    password: validatePassword,
+    email: (email) => validateEmail(email || ""),
+    name: (name) => validateName(name || ""),
+    password: (password) => validatePassword(password || ""),
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,6 +52,8 @@ export const RegistrationForm = () => {
       console.log(error);
     }
   };
+
+  console.log(formState);
   return (
     <Box
       component="form"
@@ -107,6 +110,39 @@ export const RegistrationForm = () => {
         ]}
         onChange={handleChange}
       />
+      {formState.role === "employee" && (
+        <MaskedInput
+          mask={[
+            /\d/,
+            /\d/,
+            /\d/,
+            "-",
+            /\d/,
+            /\d/,
+            /\d/,
+            "-",
+            /\d/,
+            /\d/,
+            /\d/,
+            /\d/,
+          ]}
+          value={formState.number}
+          onChange={handleChange}
+          render={(ref, props) => (
+            <Input
+              {...props}
+              inputRef={ref}
+              type="tel"
+              name="number"
+              label="Номер телефона"
+              fullWidth
+              placeholder="000-000-0000"
+              error={!!errors.number}
+              helperText={errors.number}
+            />
+          )}
+        />
+      )}
       <Button
         type="submit"
         variant="outlined"

@@ -4,6 +4,11 @@ import { DepartmentRecord } from "@/entities/staffing";
 import { Input } from "@/shared/ui/Input";
 import { useAddDepartmentMutation } from "../../api/departmentApi";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
+import MaskedInput from "react-text-mask";
+import { validateDepartmentName } from "../model/validateDepartmentForm";
+import { useGetDepartmentQuery } from "@/entities/staffing";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
+import { validatePhoneNumber } from "@/shared/lib/validate";
 
 export const CreateDepartmentForm = ({
   onDepartmentAdded,
@@ -19,9 +24,23 @@ export const CreateDepartmentForm = ({
 
   const [addDepartment, { isLoading }] = useAddDepartmentMutation();
   const { closeModal } = useModalContext();
+  const { data: departments = [] } = useGetDepartmentQuery();
+
+  const existingPhones = departments.map(
+    (department) => department.КонтактныйТелефон
+  );
+
+  const { errors, validateForm } = useValidation<
+    Omit<DepartmentRecord, "КодОтдела">
+  >({
+    НазваниеОтдела: () => validateDepartmentName(formState.НазваниеОтдела),
+    КонтактныйТелефон: () =>
+      validatePhoneNumber(formState.КонтактныйТелефон, existingPhones),
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm(formState)) return;
     try {
       await addDepartment(formState);
       closeModal();
@@ -36,17 +55,45 @@ export const CreateDepartmentForm = ({
       isLoading={isLoading}
       onSubmit={handleSubmit}
     >
-      <Input
-        type="tel"
-        name="КонтактныйТелефон"
-        label="Контактный телефон"
+      <MaskedInput
+        mask={[
+          /\d/,
+          /\d/,
+          /\d/,
+          "-",
+          /\d/,
+          /\d/,
+          /\d/,
+          "-",
+          /\d/,
+          /\d/,
+          /\d/,
+          /\d/,
+        ]}
+        value={formState.КонтактныйТелефон}
         onChange={handleChange}
+        render={(ref, props) => (
+          <Input
+            {...props}
+            inputRef={ref}
+            type="tel"
+            name="КонтактныйТелефон"
+            label="Телефон"
+            fullWidth
+            placeholder="000-000-0000"
+            error={!!errors.КонтактныйТелефон}
+            helperText={errors.КонтактныйТелефон}
+          />
+        )}
       />
       <Input
         type="text"
         name="НазваниеОтдела"
         label="Название отдела"
         onChange={handleChange}
+        fullWidth
+        error={!!errors.НазваниеОтдела}
+        helperText={errors.НазваниеОтдела}
       />
     </BaseForm>
   );

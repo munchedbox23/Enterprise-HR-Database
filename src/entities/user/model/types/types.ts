@@ -29,6 +29,7 @@ export interface IUserLogin extends Omit<IUser, "name"> {
 export interface IUserRegister extends IUser {
   password: string;
   role: "employee" | "admin";
+  number?: string;
 }
 
 export interface IUserResetPassword {

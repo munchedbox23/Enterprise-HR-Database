@@ -8,6 +8,15 @@ import MaskedInput from "react-text-mask";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
 import { useAddEmployeeMutation } from "@/entities/employee";
 import { useGetDepartmentQuery } from "@/entities/staffing";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
+import {
+  validateEducationLevel,
+  validateExperience,
+  validatePhoneNumber,
+  validatePosition,
+  validateSalary,
+} from "../model/lib/validateForm";
+import { validateName } from "@/shared/lib/validate";
 
 export const CreateAnEmployeeForm = ({
   onEmployeeAdded,
@@ -28,12 +37,30 @@ export const CreateAnEmployeeForm = ({
   const { data: departments } = useGetDepartmentQuery();
   const [addEmployee, { isLoading }] = useAddEmployeeMutation();
 
+  const { errors, validateForm } = useValidation<
+    Omit<Employee, "IdСотрудника" | "КодОтдела">
+  >({
+    ФИО: (value) => validateName(value as string),
+    Должность: (value) => validatePosition(value as string | number),
+    Стаж: (value) => validateExperience(value as string | number | undefined),
+    КонтактныйТелефон: (value) => validatePhoneNumber(value as string),
+    ЗаработнаяПлата: (value) => validateSalary(Number(value)),
+    УровеньОбразования: (value) => validateEducationLevel(value as string),
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    await addEmployee({ ...formState, ЗаработнаяПлата: Number(formState.ЗаработнаяПлата) });
-    onEmployeeAdded();
-    closeModal();
+    if (!validateForm(formState)) return;
+    try {
+      await addEmployee({
+        ...formState,
+        ЗаработнаяПлата: Number(formState.ЗаработнаяПлата),
+      });
+      onEmployeeAdded();
+      closeModal();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -62,6 +89,8 @@ export const CreateAnEmployeeForm = ({
         value={formState.ФИО}
         onChange={handleChange}
         fullWidth
+        error={!!errors.ФИО}
+        helperText={errors.ФИО}
       />
       <Input
         type="text"
@@ -70,6 +99,8 @@ export const CreateAnEmployeeForm = ({
         value={formState.Должность?.toString() || ""}
         onChange={handleChange}
         fullWidth
+        error={!!errors.Должность}
+        helperText={errors.Должность}
       />
       <Input
         type="number"
@@ -79,6 +110,8 @@ export const CreateAnEmployeeForm = ({
         onChange={handleChange}
         inputProps={{ min: 0, max: 100 }}
         fullWidth
+        error={!!errors.Стаж}
+        helperText={errors.Стаж}
       />
       <MaskedInput
         mask={phoneMask}
@@ -90,8 +123,11 @@ export const CreateAnEmployeeForm = ({
             inputRef={ref}
             type="tel"
             name="КонтактныйТелефон"
+            placeholder="89999999999"
             label="Телефон"
             fullWidth
+            error={!!errors.КонтактныйТелефон}
+            helperText={errors.КонтактныйТелефон}
           />
         )}
       />
@@ -103,6 +139,8 @@ export const CreateAnEmployeeForm = ({
         onChange={handleChange}
         inputProps={{ min: 1, max: 100000000 }}
         fullWidth
+        error={!!errors.ЗаработнаяПлата}
+        helperText={errors.ЗаработнаяПлата}
       />
       <CustomSelect
         label="Уровень образования"

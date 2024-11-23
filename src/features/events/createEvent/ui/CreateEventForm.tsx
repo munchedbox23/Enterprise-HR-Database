@@ -7,6 +7,8 @@ import { useAddEventMutation } from "@/entities/events/api/eventApi";
 import { useGetEmployeesQuery } from "@/entities/employee";
 import { TextField } from "@mui/material";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
+import { validateDate, validateEventType } from "../model/validationEventForm";
 
 export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { formState, handleChange } = useForm<Omit<Event, "НомерСобытия">>({
@@ -20,8 +22,16 @@ export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { data: employees = [] } = useGetEmployeesQuery();
   const { closeModal } = useModalContext();
 
+  const { errors, validateForm } = useValidation<
+    Omit<Event, "НомерСобытия" | "IdСотрудника" | "Комментарий">
+  >({
+    ДатаСобытия: () => validateDate(formState.ДатаСобытия),
+    ТипСобытия: () => validateEventType(formState.ТипСобытия),
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm(formState)) return;
     try {
       await addEvent({
         ...formState,
@@ -58,6 +68,8 @@ export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
         value={formState.ДатаСобытия}
         onChange={handleChange}
         fullWidth
+        error={!!errors.ДатаСобытия}
+        helperText={errors.ДатаСобытия}
       />
       <Input
         type="text"
@@ -66,6 +78,8 @@ export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
         value={formState.ТипСобытия}
         onChange={handleChange}
         fullWidth
+        error={!!errors.ТипСобытия}
+        helperText={errors.ТипСобытия}
       />
       <TextField
         multiline
@@ -79,3 +93,10 @@ export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
     </BaseForm>
   );
 };
+
+function validateComment(comment: string | undefined): string | null {
+  if (!comment || comment.trim().length === 0) {
+    return "Комментарий не может быть пустым";
+  }
+  return null;
+}

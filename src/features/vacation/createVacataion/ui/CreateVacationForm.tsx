@@ -5,6 +5,12 @@ import { BaseForm } from "@/shared/ui/BaseForm";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { useGetEmployeesQuery } from "@/entities/employee";
 import { Input } from "@/shared/ui/Input";
+import {
+  validateStartDate,
+  validateEndDate,
+  validateVacationType,
+} from "../model/validateVacationForm";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
 
 export const CreateVacationForm = ({
   onSuccess,
@@ -21,14 +27,25 @@ export const CreateVacationForm = ({
   const { data: employees = [] } = useGetEmployeesQuery();
   const { closeModal } = useModalContext();
 
+  const { errors, validateForm } = useValidation<
+    Omit<Vacation, "НомерЗаписи" | "IdСотрудника">
+  >({
+    ДатаНачала: () => validateStartDate(formState.ДатаНачала),
+    ДатаОкончания: () =>
+      validateEndDate(formState.ДатаНачала, formState.ДатаОкончания),
+    Тип: () => validateVacationType(formState.Тип),
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm(formState)) return;
     try {
       await addVacation({
         ...formState,
         IdСотрудника: Number(formState.IdСотрудника),
       });
       closeModal();
+      onSuccess();
     } catch (error) {
       console.log(error);
     }
@@ -58,6 +75,8 @@ export const CreateVacationForm = ({
         value={formState.ДатаНачала}
         onChange={handleChange}
         fullWidth
+        error={!!errors.ДатаНачала}
+        helperText={errors.ДатаНачала}
       />
       <Input
         type="date"
@@ -66,14 +85,18 @@ export const CreateVacationForm = ({
         value={formState.ДатаОкончания}
         onChange={handleChange}
         fullWidth
+        error={!!errors.ДатаОкончания}
+        helperText={errors.ДатаОкончания}
       />
-      <Input
+      <Input  
         type="text"
-        label=""
+        label="Тип отпуска"
         name="Тип"
         value={formState.Тип}
         onChange={handleChange}
         fullWidth
+        error={!!errors.Тип}
+        helperText={errors.Тип}
       />
     </BaseForm>
   );
