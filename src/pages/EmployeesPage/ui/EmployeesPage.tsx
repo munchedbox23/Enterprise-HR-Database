@@ -7,11 +7,16 @@ import { useSnackbar } from "@/shared/lib/hooks/useSnackbar";
 import { NotificationSnackbar } from "@/shared/ui/NotificationSnackbar.tsx";
 import { EditAnEntity } from "@/features/common/EditAnEntity";
 import { UpdateAnEmployeeForm } from "@/features/employee/updateAnEmployee";
+import { useEffect } from "react";
 
 export const EmployeesPage = () => {
-  const { data = [], isLoading } = useGetEmployeesQuery();
+  const { data = [], isLoading, refetch } = useGetEmployeesQuery();
   const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
     useSnackbar();
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const columns = [
     { name: "IdСотрудника", label: "ID Сотрудника" },
@@ -31,7 +36,9 @@ export const EmployeesPage = () => {
             <EditAnEntity title="Редактировать сотрудника">
               <UpdateAnEmployeeForm
                 employee={tableMeta.rowData as EmployeeValueTypes}
-                onEmployeeUpdated={handleOpenSnackbar}
+                onEmployeeUpdated={() => {
+                  handleOpenSnackbar();
+                }}
               />
             </EditAnEntity>
           );

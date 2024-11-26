@@ -3,20 +3,21 @@ import { useForm } from "@/shared/lib/hooks/useForm";
 import { BaseForm } from "@/shared/ui/BaseForm";
 import { Input } from "@/shared/ui/Input";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
-import { phoneMask } from "../model/const/constants";
 import MaskedInput from "react-text-mask";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
-import { useAddEmployeeMutation } from "@/entities/employee";
+import {
+  useAddEmployeeMutation,
+  useGetEmployeesQuery,
+} from "@/entities/employee";
 import { useGetDepartmentQuery } from "@/entities/staffing";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 import {
   validateEducationLevel,
   validateExperience,
-  validatePhoneNumber,
   validatePosition,
   validateSalary,
 } from "../model/lib/validateForm";
-import { validateName } from "@/shared/lib/validate";
+import { validateName, validatePhoneNumber } from "@/shared/lib/validate";
 
 export const CreateAnEmployeeForm = ({
   onEmployeeAdded,
@@ -36,6 +37,11 @@ export const CreateAnEmployeeForm = ({
   const { closeModal } = useModalContext();
   const { data: departments } = useGetDepartmentQuery();
   const [addEmployee, { isLoading }] = useAddEmployeeMutation();
+  const { data: employees = [] } = useGetEmployeesQuery();
+
+  const existingPhones = employees.map(
+    (employee) => employee.КонтактныйТелефон
+  );
 
   const { errors, validateForm } = useValidation<
     Omit<Employee, "IdСотрудника" | "КодОтдела">
@@ -43,8 +49,9 @@ export const CreateAnEmployeeForm = ({
     ФИО: (value) => validateName(value as string),
     Должность: (value) => validatePosition(value as string | number),
     Стаж: (value) => validateExperience(value as string | number | undefined),
-    КонтактныйТелефон: (value) => validatePhoneNumber(value as string),
     ЗаработнаяПлата: (value) => validateSalary(Number(value)),
+    КонтактныйТелефон: () =>
+      validatePhoneNumber(formState.КонтактныйТелефон, existingPhones),
     УровеньОбразования: (value) => validateEducationLevel(value as string),
   });
 
@@ -114,7 +121,20 @@ export const CreateAnEmployeeForm = ({
         helperText={errors.Стаж}
       />
       <MaskedInput
-        mask={phoneMask}
+        mask={[
+          /\d/,
+          /\d/,
+          /\d/,
+          "-",
+          /\d/,
+          /\d/,
+          /\d/,
+          "-",
+          /\d/,
+          /\d/,
+          /\d/,
+          /\d/,
+        ]}
         value={formState.КонтактныйТелефон}
         onChange={handleChange}
         render={(ref, props) => (
@@ -123,9 +143,9 @@ export const CreateAnEmployeeForm = ({
             inputRef={ref}
             type="tel"
             name="КонтактныйТелефон"
-            placeholder="89999999999"
-            label="Телефон"
+            label="Номер телефона"
             fullWidth
+            placeholder="000-000-0000"
             error={!!errors.КонтактныйТелефон}
             helperText={errors.КонтактныйТелефон}
           />
