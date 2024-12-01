@@ -14,12 +14,14 @@ import { useValidation } from "@/shared/lib/hooks/useValidate";
 export const UpdateVacationForm = ({
   vacation,
   onSuccess,
+  onVacationUpdatedError,
 }: {
   vacation: Vacation;
   onSuccess: () => void;
+  onVacationUpdatedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<Omit<Vacation, "НомерЗаписи">>({
-    ...vacation,  
+    ...vacation,
   });
 
   const [updateVacation, { isLoading }] = useUpdateVacationMutation();
@@ -44,10 +46,10 @@ export const UpdateVacationForm = ({
           IdСотрудника: Number(formState.IdСотрудника),
         },
         id: vacation.НомерЗаписи.toString(),
-      });
+      }).unwrap();
       onSuccess();
     } catch (error) {
-      console.log(error);
+      onVacationUpdatedError();
     }
   };
 

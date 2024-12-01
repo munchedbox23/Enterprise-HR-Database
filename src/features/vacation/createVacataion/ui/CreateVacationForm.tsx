@@ -19,8 +19,10 @@ import { useValidation } from "@/shared/lib/hooks/useValidate";
 
 export const CreateVacationForm = ({
   onSuccess,
+  onVacationAddedError,
 }: {
   onSuccess: () => void;
+  onVacationAddedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<Omit<Vacation, "НомерЗаписи">>({
     IdСотрудника: undefined,
@@ -70,11 +72,11 @@ export const CreateVacationForm = ({
       await addVacation({
         ...formState,
         IdСотрудника: Number(formState.IdСотрудника),
-      });
+      }).unwrap();
       closeModal();
       onSuccess();
     } catch (error) {
-      console.log(error);
+      onVacationAddedError();
     }
   };
 

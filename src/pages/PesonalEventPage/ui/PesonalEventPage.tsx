@@ -11,8 +11,14 @@ import { EventValueTypes } from "@/entities/events/model/types";
 
 export const PesonalEventPage = () => {
   const { data = [], isLoading } = useGetEventQuery();
-  const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
-    useSnackbar();
+  const {
+    openSnackbar,
+    handleCloseSnackbar,
+    handleOpenSnackbar,
+    openSnackbarError,
+    handleCloseSnackbarError,
+    handleOpenSnackbarError,
+  } = useSnackbar();
 
   const columns = [
     { name: "НомерСобытия", label: "Номер События" },
@@ -30,6 +36,7 @@ export const PesonalEventPage = () => {
               <UpdateEventForm
                 event={tableMeta.rowData as EventValueTypes}
                 onSuccess={handleOpenSnackbar}
+                onEventUpdatedError={handleOpenSnackbarError}
               />
             </EditAnEntity>
           );
@@ -43,7 +50,10 @@ export const PesonalEventPage = () => {
   ) : (
     <>
       <CreateAnEntity title="Создать событие">
-        <CreateEventForm onSuccess={handleOpenSnackbar} />
+        <CreateEventForm
+          onSuccess={handleOpenSnackbar}
+          onEventAddedError={handleOpenSnackbarError}
+        />
       </CreateAnEntity>
       <Table data={data} columns={columns} />
       <NotificationSnackbar
@@ -51,6 +61,12 @@ export const PesonalEventPage = () => {
         onClose={handleCloseSnackbar}
         message="Успешно выполнено"
         severity="success"
+      />
+      <NotificationSnackbar
+        open={openSnackbarError}
+        onClose={handleCloseSnackbarError}
+        message="Ошибка при выполнении операции!"
+        severity="error"
       />
     </>
   );

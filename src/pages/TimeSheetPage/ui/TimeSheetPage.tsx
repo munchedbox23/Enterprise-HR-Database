@@ -11,8 +11,14 @@ import { TimeSheetValueTypes } from "@/entities/time-sheet/model/types";
 
 export const TimeSheetPage = () => {
   const { data = [], isLoading } = useGetTimeSheetQuery();
-  const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
-    useSnackbar();
+  const {
+    openSnackbar,
+    handleCloseSnackbar,
+    handleOpenSnackbar,
+    openSnackbarError,
+    handleCloseSnackbarError,
+    handleOpenSnackbarError,
+  } = useSnackbar();
 
   const columns = [
     { name: "НомерЗаписи", label: "Номер Записи" },
@@ -32,6 +38,7 @@ export const TimeSheetPage = () => {
               <UpdateTimeSheetForm
                 timeSheet={tableMeta.rowData as TimeSheetValueTypes}
                 onSuccess={handleOpenSnackbar}
+                onTimeSheetUpdatedError={handleOpenSnackbarError}
               />
             </EditAnEntity>
           );
@@ -45,7 +52,10 @@ export const TimeSheetPage = () => {
   ) : (
     <>
       <CreateAnEntity title="Табель">
-        <CreateTimeSheetForm onSuccess={handleOpenSnackbar} />
+        <CreateTimeSheetForm
+          onSuccess={handleOpenSnackbar}
+          onTimeSheetAddedError={handleOpenSnackbarError}
+        />
       </CreateAnEntity>
       <Table data={data} columns={columns} />
       <NotificationSnackbar
@@ -53,6 +63,12 @@ export const TimeSheetPage = () => {
         onClose={handleCloseSnackbar}
         severity="success"
         message="Запись успешно выполнена"
+      />
+      <NotificationSnackbar
+        open={openSnackbarError}
+        onClose={handleCloseSnackbarError}
+        severity="error"
+        message="Ошибка при выполнении операции!"
       />
     </>
   );

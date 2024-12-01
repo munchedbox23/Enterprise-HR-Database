@@ -17,9 +17,11 @@ import {
 export const UpdateTimeSheetForm = ({
   timeSheet,
   onSuccess,
+  onTimeSheetUpdatedError,
 }: {
   timeSheet: TimeSheetValueTypes;
   onSuccess: () => void;
+  onTimeSheetUpdatedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<TimeSheetRecord, "НомерЗаписи">
@@ -53,10 +55,10 @@ export const UpdateTimeSheetForm = ({
           ),
         },
         id: timeSheet[0].toString(),
-      });
+      }).unwrap();
       onSuccess();
     } catch (error) {
-      console.log(error);
+      onTimeSheetUpdatedError();
     }
   };
 

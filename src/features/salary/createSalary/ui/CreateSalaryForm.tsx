@@ -11,12 +11,13 @@ import {
   validatePaymentType,
 } from "../model/validateSalaryForm";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
-import { validateName } from "@/shared/lib/validate";
 
 export const CreateSalaryForm = ({
   onSalaryAdded,
+  onSalaryAddedError,
 }: {
   onSalaryAdded: () => void;
+  onSalaryAddedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<SalaryRecord, "НомерЗаписи">
@@ -42,13 +43,19 @@ export const CreateSalaryForm = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm(formState)) return;
-    await addSalary({
-      ...formState,
-      IdСотрудника: Number(formState.IdСотрудника),
-      Сумма: Number(formState.Сумма),
-    });
-    closeModal();
-    onSalaryAdded();
+    try {
+      await addSalary({
+        ...formState,
+        IdСотрудника: Number(formState.IdСотрудника),
+        Сумма: Number(formState.Сумма),
+      })
+        .unwrap();
+      onSalaryAdded();
+    } catch (error) {
+      onSalaryAddedError();
+    } finally {
+      closeModal();
+    }
   };
 
   return (

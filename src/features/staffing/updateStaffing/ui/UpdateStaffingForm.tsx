@@ -15,9 +15,11 @@ import { useValidation } from "@/shared/lib/hooks/useValidate";
 export const UpdateStaffingForm = ({
   staffingRecord,
   onStaffingUpdated,
+  onStaffingUpdatedError,
 }: {
   staffingRecord: StaffingValueTypes;
   onStaffingUpdated: () => void;
+  onStaffingUpdatedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<StaffingRecord, "IdРасписания">
@@ -44,15 +46,19 @@ export const UpdateStaffingForm = ({
 
     if (!validateForm(formState)) return;
 
-    await updateStaffing({
-      staffing: {
-        ...formState,
-        Оклад: Number(formState.Оклад),
-        КоличествоЕдиниц: Number(formState.КоличествоЕдиниц),
-      },
-      id: staffingRecord[0].toString(),
-    });
-    onStaffingUpdated();
+    try {
+      await updateStaffing({
+        staffing: {
+          ...formState,
+          Оклад: Number(formState.Оклад),
+          КоличествоЕдиниц: Number(formState.КоличествоЕдиниц),
+        },
+        id: staffingRecord[0].toString(),
+      }).unwrap();
+      onStaffingUpdated();
+    } catch (error) {
+      onStaffingUpdatedError();
+    }
   };
 
   return (

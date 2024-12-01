@@ -18,8 +18,14 @@ import { UpdateVacationForm } from "@/features/vacation/updateVacation";
 
 export const VacationPage = () => {
   const { data: vacations = [], isLoading } = useGetVacationsQuery();
-  const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
-    useSnackbar();
+  const {
+    openSnackbar,
+    handleCloseSnackbar,
+    handleOpenSnackbar,
+    openSnackbarError,
+    handleCloseSnackbarError,
+    handleOpenSnackbarError,
+  } = useSnackbar();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -106,7 +112,10 @@ export const VacationPage = () => {
             sx={{ marginBottom: 2 }}
           >
             <CreateAnEntity title="Создать отпуск">
-              <CreateVacationForm onSuccess={handleOpenSnackbar} />
+              <CreateVacationForm
+                onSuccess={handleOpenSnackbar}
+                onVacationAddedError={handleOpenSnackbarError}
+              />
             </CreateAnEntity>
             <Filter
               isOpen={isDialogOpen}
@@ -133,6 +142,7 @@ export const VacationPage = () => {
                   <UpdateVacationForm
                     vacation={vacation}
                     onSuccess={handleOpenSnackbar}
+                    onVacationUpdatedError={handleOpenSnackbarError}
                   />
                 </EditAnEntity>
               </VacationItem>
@@ -144,6 +154,12 @@ export const VacationPage = () => {
             onClose={handleCloseSnackbar}
             message="Запись успешно выполнена"
             severity="success"
+          />
+          <NotificationSnackbar
+            open={openSnackbarError}
+            onClose={handleCloseSnackbarError}
+            severity="error"
+            message="Ошибка при выполнении операции!"
           />
         </>
       )}

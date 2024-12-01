@@ -7,16 +7,17 @@ import { useSnackbar } from "@/shared/lib/hooks/useSnackbar";
 import { NotificationSnackbar } from "@/shared/ui/NotificationSnackbar.tsx";
 import { EditAnEntity } from "@/features/common/EditAnEntity";
 import { UpdateAnEmployeeForm } from "@/features/employee/updateAnEmployee";
-import { useEffect } from "react";
 
 export const EmployeesPage = () => {
-  const { data = [], isLoading, refetch } = useGetEmployeesQuery();
-  const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
-    useSnackbar();
-
-  useEffect(() => {
-    refetch();
-  }, []);
+  const { data = [], isLoading } = useGetEmployeesQuery();
+  const {
+    openSnackbar,
+    handleCloseSnackbar,
+    handleOpenSnackbar,
+    openSnackbarError,
+    handleCloseSnackbarError,
+    handleOpenSnackbarError,
+  } = useSnackbar();
 
   const columns = [
     { name: "IdСотрудника", label: "ID Сотрудника" },
@@ -39,6 +40,7 @@ export const EmployeesPage = () => {
                 onEmployeeUpdated={() => {
                   handleOpenSnackbar();
                 }}
+                onEmployeeUpdatedError={handleOpenSnackbarError}
               />
             </EditAnEntity>
           );
@@ -54,7 +56,10 @@ export const EmployeesPage = () => {
       ) : (
         <>
           <CreateAnEntity title="Создать сотрудника">
-            <CreateAnEmployeeForm onEmployeeAdded={handleOpenSnackbar} />
+            <CreateAnEmployeeForm
+              onEmployeeAdded={handleOpenSnackbar}
+              onEmployeeAddedError={handleOpenSnackbarError}
+            />
           </CreateAnEntity>
           <Table data={data} columns={columns} />
           <NotificationSnackbar
@@ -62,6 +67,12 @@ export const EmployeesPage = () => {
             onClose={handleCloseSnackbar}
             message="Процесс успешно завершен!"
             severity="success"
+          />
+          <NotificationSnackbar
+            open={openSnackbarError}
+            onClose={handleCloseSnackbarError}
+            message="Ошибка при выполнении операции!"
+            severity="error"
           />
         </>
       )}

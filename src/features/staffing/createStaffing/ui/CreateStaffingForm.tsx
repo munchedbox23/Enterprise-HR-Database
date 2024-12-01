@@ -14,8 +14,10 @@ import { useValidation } from "@/shared/lib/hooks/useValidate";
 
 export const CreateStaffingForm = ({
   onStaffingAdded,
+  onStaffingAddedError,
 }: {
   onStaffingAdded: () => void;
+  onStaffingAddedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<StaffingRecord, "IdРасписания">
@@ -41,13 +43,16 @@ export const CreateStaffingForm = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm(formState)) return;
-    await addStaffing({
-      ...formState,
-      Оклад: Number(formState.Оклад),
-      КоличествоЕдиниц: Number(formState.КоличествоЕдиниц),
-    });
-    closeModal();
-    onStaffingAdded();
+    try {
+      await addStaffing({
+        ...formState,
+        Оклад: Number(formState.Оклад),
+        КоличествоЕдиниц: Number(formState.КоличествоЕдиниц),
+      }).unwrap();
+      onStaffingAdded();
+    } catch (error) {
+      onStaffingAddedError();
+    }
   };
 
   return (

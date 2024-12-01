@@ -22,8 +22,10 @@ import { validatePhoneNumber } from "@/shared/lib/validate";
 
 export const CreateAnEmployeeForm = ({
   onEmployeeAdded,
+  onEmployeeAddedError,
 }: {
   onEmployeeAdded: () => void;
+  onEmployeeAddedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<Omit<Employee, "IdСотрудника">>({
     КодОтдела: "",
@@ -72,11 +74,13 @@ export const CreateAnEmployeeForm = ({
       await addEmployee({
         ...formState,
         ЗаработнаяПлата: Number(formState.ЗаработнаяПлата),
-      });
+      }).unwrap();
       onEmployeeAdded();
-      closeModal();
     } catch (error) {
+      onEmployeeAddedError();
       console.log(error);
+    } finally {
+      closeModal();
     }
   };
 

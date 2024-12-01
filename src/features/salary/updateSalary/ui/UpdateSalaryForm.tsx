@@ -14,9 +14,11 @@ import { useValidation } from "@/shared/lib/hooks/useValidate";
 export const UpdateSalaryForm = ({
   salary,
   onSuccess,
+  onSalaryUpdatedError,
 }: {
   salary: SalaryRecord;
   onSuccess: () => void;
+  onSalaryUpdatedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<SalaryRecord, "НомерЗаписи">
@@ -46,9 +48,11 @@ export const UpdateSalaryForm = ({
           Сумма: Number(formState.Сумма),
         },
         id: salary.НомерЗаписи.toString(),
-      });
+      })
+        .unwrap();
       onSuccess();
     } catch (error) {
+      onSalaryUpdatedError();
       console.log(error);
     }
   };

@@ -12,8 +12,10 @@ import { validatePhoneNumber } from "@/shared/lib/validate";
 
 export const CreateDepartmentForm = ({
   onDepartmentAdded,
+  onDepartmentAddedError,
 }: {
   onDepartmentAdded: () => void;
+  onDepartmentAddedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<DepartmentRecord, "КодОтдела">
@@ -42,11 +44,13 @@ export const CreateDepartmentForm = ({
     e.preventDefault();
     if (!validateForm(formState)) return;
     try {
-      await addDepartment(formState);
-      closeModal();
+      await addDepartment(formState).unwrap();
       onDepartmentAdded();
     } catch (error) {
+      onDepartmentAddedError();
       console.log(error);
+    } finally {
+      closeModal();
     }
   };
   return (

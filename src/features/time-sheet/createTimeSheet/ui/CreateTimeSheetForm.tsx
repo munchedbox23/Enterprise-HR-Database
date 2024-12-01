@@ -16,8 +16,10 @@ import { useValidation } from "@/shared/lib/hooks/useValidate";
 
 export const CreateTimeSheetForm = ({
   onSuccess,
+  onTimeSheetAddedError,
 }: {
   onSuccess: () => void;
+  onTimeSheetAddedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<TimeSheetRecord, "НомерЗаписи">
@@ -49,11 +51,12 @@ export const CreateTimeSheetForm = ({
         КоличествоОтработанныхЧасов: Number(
           formState.КоличествоОтработанныхЧасов
         ),
-      });
-      closeModal();
+      }).unwrap();
       onSuccess();
     } catch (error) {
-      console.log(error);
+      onTimeSheetAddedError();
+    } finally {
+      closeModal();
     }
   };
 

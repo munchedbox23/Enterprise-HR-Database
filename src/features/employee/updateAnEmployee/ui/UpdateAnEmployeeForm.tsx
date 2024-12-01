@@ -22,9 +22,11 @@ import { validatePhoneNumber } from "@/shared/lib/validate";
 export const UpdateAnEmployeeForm = ({
   employee,
   onEmployeeUpdated,
+  onEmployeeUpdatedError,
 }: {
   employee: EmployeeValueTypes;
   onEmployeeUpdated: () => void;
+  onEmployeeUpdatedError: () => void;
 }) => {
   const [
     IdСотрудника,
@@ -71,9 +73,10 @@ export const UpdateAnEmployeeForm = ({
           ЗаработнаяПлата: Number(formState.ЗаработнаяПлата),
         },
         id: IdСотрудника.toString(),
-      });
+      }).unwrap();
       onEmployeeUpdated();
     } catch (error) {
+      onEmployeeUpdatedError();
       console.log("Error updating employee:", error);
     }
   };

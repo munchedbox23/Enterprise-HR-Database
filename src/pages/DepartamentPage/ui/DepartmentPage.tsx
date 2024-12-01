@@ -11,8 +11,14 @@ import { DepartmentValueTypes } from "@/entities/staffing";
 
 export const DepartmentPage = () => {
   const { data = [], isLoading, refetch } = useGetDepartmentQuery();
-  const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
-    useSnackbar();
+  const {
+    openSnackbar,
+    handleCloseSnackbar,
+    handleOpenSnackbar,
+    openSnackbarError,
+    handleCloseSnackbarError,
+    handleOpenSnackbarError,
+  } = useSnackbar();
 
   const columns = [
     { name: "КодОтдела", label: "Код Отдела" },
@@ -28,6 +34,7 @@ export const DepartmentPage = () => {
               <UpdateDepartmentForm
                 department={tableMeta.rowData as DepartmentValueTypes}
                 onSuccess={handleDepartmentUpdated}
+                onDepartmentUpdatedError={handleOpenSnackbarError}
               />
             </EditAnEntity>
           );
@@ -44,14 +51,17 @@ export const DepartmentPage = () => {
   function handleDepartmentUpdated() {
     handleOpenSnackbar();
     refetch();
-  };
+  }
 
   return isLoading ? (
     <Hourglass />
   ) : (
     <>
       <CreateAnEntity title="Добавить Отдел">
-        <CreateDepartmentForm onDepartmentAdded={handleDepartmentAdded} />
+        <CreateDepartmentForm
+          onDepartmentAdded={handleDepartmentAdded}
+          onDepartmentAddedError={handleOpenSnackbarError}
+        />
       </CreateAnEntity>
       <Table data={data} columns={columns} />
       <NotificationSnackbar
@@ -59,6 +69,12 @@ export const DepartmentPage = () => {
         onClose={handleCloseSnackbar}
         message="Успешно выполнено"
         severity="success"
+      />
+      <NotificationSnackbar
+        open={openSnackbarError}
+        onClose={handleCloseSnackbarError}
+        message="Ошибка при выполнении операции!"
+        severity="error"
       />
     </>
   );

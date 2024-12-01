@@ -9,7 +9,13 @@ import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useMod
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 import { validateDate, validateEventType } from "../model/validationEventForm";
 
-export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
+export const CreateEventForm = ({
+  onSuccess,
+  onEventAddedError,
+}: {
+  onSuccess: () => void;
+  onEventAddedError: () => void;
+}) => {
   const { formState, handleChange } = useForm<Omit<Event, "НомерСобытия">>({
     IdСотрудника: undefined,
     ДатаСобытия: new Date().toISOString().split("T")[0],
@@ -35,11 +41,13 @@ export const CreateEventForm = ({ onSuccess }: { onSuccess: () => void }) => {
       await addEvent({
         ...formState,
         IdСотрудника: Number(formState.IdСотрудника),
-      });
-      closeModal();
+      }).unwrap();
       onSuccess();
     } catch (error) {
+      onEventAddedError();
       console.log(error);
+    } finally {
+      closeModal();
     }
   };
 

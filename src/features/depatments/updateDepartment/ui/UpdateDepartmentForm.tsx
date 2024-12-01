@@ -12,9 +12,11 @@ import { validateDepartmentName } from "../../createDepartment/model/validateDep
 export const UpdateDepartmentForm = ({
   department,
   onSuccess,
+  onDepartmentUpdatedError,
 }: {
   department: DepartmentValueTypes;
   onSuccess: () => void;
+  onDepartmentUpdatedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<
     Omit<DepartmentRecord, "КодОтдела">
@@ -45,9 +47,10 @@ export const UpdateDepartmentForm = ({
       await updateDepartment({
         department: { ...formState },
         id: department[0].toString(),
-      });
+      }).unwrap();
       onSuccess();
     } catch (error) {
+      onDepartmentUpdatedError();
       console.log(error);
     }
   };

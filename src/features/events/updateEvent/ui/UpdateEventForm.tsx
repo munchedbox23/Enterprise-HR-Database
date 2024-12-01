@@ -14,9 +14,11 @@ import { EventValueTypes, Event } from "@/entities/events/model/types";
 export const UpdateEventForm = ({
   event,
   onSuccess,
+  onEventUpdatedError,
 }: {
   event: EventValueTypes;
   onSuccess: () => void;
+  onEventUpdatedError: () => void;
 }) => {
   const { formState, handleChange } = useForm<Omit<Event, "НомерСобытия">>({
     IdСотрудника: event[1],
@@ -42,9 +44,10 @@ export const UpdateEventForm = ({
       await updateEvent({
         event: { ...formState, IdСотрудника: Number(formState.IdСотрудника) },
         id: event[0].toString(),
-      });
+      }).unwrap();
       onSuccess();
     } catch (error) {
+      onEventUpdatedError();
       console.log(error);
     }
   };

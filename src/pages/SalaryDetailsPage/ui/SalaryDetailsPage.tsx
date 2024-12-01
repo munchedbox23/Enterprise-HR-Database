@@ -18,8 +18,15 @@ import { UpdateSalaryForm } from "@/features/salary/updateSalary";
 
 export const SalaryDetailsPage = () => {
   const { data: salary = [], isLoading } = useGetSalaryQuery();
-  const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
-    useSnackbar();
+  const {
+    openSnackbar,
+    handleCloseSnackbar,
+    handleOpenSnackbar,
+    openSnackbarError,
+    handleCloseSnackbarError,
+    handleOpenSnackbarError,
+  } = useSnackbar();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const { formState, handleChange } = useForm({
@@ -110,7 +117,10 @@ export const SalaryDetailsPage = () => {
         <>
           <Stack direction="row" gap={2} justifyContent="flex-end">
             <CreateAnEntity title="Добавить выплату">
-              <CreateSalaryForm onSalaryAdded={handleOpenSnackbar} />
+              <CreateSalaryForm
+                onSalaryAdded={handleOpenSnackbar}
+                onSalaryAddedError={handleOpenSnackbarError}
+              />
             </CreateAnEntity>
             <Filter
               isOpen={isDialogOpen}
@@ -137,6 +147,7 @@ export const SalaryDetailsPage = () => {
                   <UpdateSalaryForm
                     salary={salary}
                     onSuccess={handleOpenSnackbar}
+                    onSalaryUpdatedError={handleOpenSnackbarError}
                   />
                 </EditAnEntity>
               </SalaryCard>
@@ -149,6 +160,12 @@ export const SalaryDetailsPage = () => {
             onClose={handleCloseSnackbar}
             severity="success"
             message="Операция выполнена успешно!"
+          />
+          <NotificationSnackbar
+            open={openSnackbarError}
+            onClose={handleCloseSnackbarError}
+            message="Ошибка при выполнении операции!"
+            severity="error"
           />
         </>
       )}

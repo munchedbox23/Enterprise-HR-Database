@@ -11,8 +11,14 @@ import { StaffingValueTypes } from "@/entities/staffing";
 
 export const StaffingPage = () => {
   const { data: staffing = [], isLoading } = useGetStaffingQuery();
-  const { openSnackbar, handleCloseSnackbar, handleOpenSnackbar } =
-    useSnackbar();
+  const {
+    openSnackbar,
+    handleCloseSnackbar,
+    handleOpenSnackbar,
+    openSnackbarError,
+    handleCloseSnackbarError,
+    handleOpenSnackbarError,
+  } = useSnackbar();
 
   const columns = [
     { name: "IdРасписания", label: "ID Расписания" },
@@ -30,6 +36,7 @@ export const StaffingPage = () => {
               <UpdateStaffingForm
                 staffingRecord={tableMeta.rowData as StaffingValueTypes}
                 onStaffingUpdated={handleOpenSnackbar}
+                onStaffingUpdatedError={handleOpenSnackbarError}
               />
             </EditAnEntity>
           );
@@ -42,7 +49,10 @@ export const StaffingPage = () => {
   ) : (
     <>
       <CreateAnEntity title="Создать расписание">
-        <CreateStaffingForm onStaffingAdded={handleOpenSnackbar} />
+        <CreateStaffingForm
+          onStaffingAdded={handleOpenSnackbar}
+          onStaffingAddedError={handleOpenSnackbarError}
+        />
       </CreateAnEntity>
       <Table data={staffing} columns={columns} />
       <NotificationSnackbar
@@ -50,6 +60,12 @@ export const StaffingPage = () => {
         onClose={handleCloseSnackbar}
         message="Расписание успешно добавлено!"
         severity="success"
+      />
+      <NotificationSnackbar
+        open={openSnackbarError}
+        onClose={handleCloseSnackbarError}
+        message="Ошибка при выполнении операции!"
+        severity="error"
       />
     </>
   );
