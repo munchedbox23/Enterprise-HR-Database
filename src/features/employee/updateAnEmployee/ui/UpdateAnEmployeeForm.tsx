@@ -15,9 +15,9 @@ import {
   validateExperience,
   validatePosition,
   validateSalary,
+  validateFullName,
 } from "../../createAnEmployee/model/lib/validateForm";
 import { validatePhoneNumber } from "@/shared/lib/validate";
-import { validateName } from "@/shared/lib/validate";
 
 export const UpdateAnEmployeeForm = ({
   employee,
@@ -52,7 +52,7 @@ export const UpdateAnEmployeeForm = ({
   const { errors, validateForm } = useValidation<
     Omit<Employee, "IdСотрудника" | "КодОтдела">
   >({
-    ФИО: (value) => validateName(value as string),
+    ФИО: (value) => validateFullName(value as string),
     Должность: (value) => validatePosition(value as string | number),
     Стаж: (value) => validateExperience(value as string | number | undefined),
     КонтактныйТелефон: () =>

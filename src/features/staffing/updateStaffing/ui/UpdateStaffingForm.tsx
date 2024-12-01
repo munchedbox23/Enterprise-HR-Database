@@ -9,6 +9,8 @@ import {
 } from "@/entities/staffing";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { useGetEmployeesQuery } from "@/entities/employee";
+import { validateNumberOfUnits, validateSalary } from "@/shared/lib/validate";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
 
 export const UpdateStaffingForm = ({
   staffingRecord,
@@ -26,12 +28,21 @@ export const UpdateStaffingForm = ({
     Оклад: staffingRecord[4],
   });
 
+  const { errors, validateForm } = useValidation<
+    Pick<StaffingRecord, "КоличествоЕдиниц" | "Оклад">
+  >({
+    КоличествоЕдиниц: (value) => validateNumberOfUnits(Number(value)),
+    Оклад: (value) => validateSalary(Number(value)),
+  });
+
   const [updateStaffing, { isLoading }] = useUpdateStaffingMutation();
   const { data: departments = [] } = useGetDepartmentQuery();
   const { data: employees = [] } = useGetEmployeesQuery();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validateForm(formState)) return;
 
     await updateStaffing({
       staffing: {
@@ -88,6 +99,8 @@ export const UpdateStaffingForm = ({
         onChange={handleChange}
         inputProps={{ min: 1 }}
         fullWidth
+        error={!!errors.КоличествоЕдиниц}
+        helperText={errors.КоличествоЕдиниц}
       />
       <Input
         type="number"
@@ -97,6 +110,8 @@ export const UpdateStaffingForm = ({
         onChange={handleChange}
         inputProps={{ min: 1 }}
         fullWidth
+        error={!!errors.Оклад}
+        helperText={errors.Оклад}
       />
     </BaseForm>
   );

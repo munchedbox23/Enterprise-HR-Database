@@ -1,14 +1,3 @@
-function validatePaymentDate(date: string): string | null {
-  const selectedDate = new Date(date);
-  const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0);
-
-  if (selectedDate > currentDate) {
-    return "Дата выплаты не может быть в будущем";
-  }
-  return null;
-}
-
 function validateAmount(amount: string): string | null {
   const parsedAmount = parseFloat(amount);
   if (isNaN(parsedAmount) || parsedAmount <= 0) {
@@ -17,4 +6,21 @@ function validateAmount(amount: string): string | null {
   return null;
 }
 
-export { validatePaymentDate, validateAmount };
+function validatePaymentType(type: string): string | null {
+  if (!type) {
+    return "Тип выплаты не может быть пустым";
+  }
+  return null;
+}
+
+function validatePaymentDate(date: string): string | null {
+  if (!date) {
+    return "Дата не может быть пустой";
+  }
+  const paymentDate = new Date(date);
+  const currentDate = new Date();
+  return paymentDate <= currentDate
+    ? null
+    : "Дата выплаты не может быть в будущем";
+}
+export { validatePaymentDate, validateAmount, validatePaymentType };

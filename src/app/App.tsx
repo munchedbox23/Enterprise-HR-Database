@@ -1,6 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./providers/router";
-import { AnimatePresence } from "framer-motion";
+import { UserProvider } from "./providers/UserProvider";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/app/providers/StoreProvider";
 import { checkUserAuth } from "@/entities/user";

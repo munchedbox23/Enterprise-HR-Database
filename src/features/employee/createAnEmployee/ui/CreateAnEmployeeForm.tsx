@@ -16,8 +16,9 @@ import {
   validateExperience,
   validatePosition,
   validateSalary,
+  validateFullName,
 } from "../model/lib/validateForm";
-import { validateName, validatePhoneNumber } from "@/shared/lib/validate";
+import { validatePhoneNumber } from "@/shared/lib/validate";
 
 export const CreateAnEmployeeForm = ({
   onEmployeeAdded,
@@ -44,15 +45,24 @@ export const CreateAnEmployeeForm = ({
   );
 
   const { errors, validateForm } = useValidation<
-    Omit<Employee, "IdСотрудника" | "КодОтдела">
+    Omit<Employee, "IdСотрудника">
   >({
-    ФИО: (value) => validateName(value as string),
+    ФИО: (value) => validateFullName(value as string),
     Должность: (value) => validatePosition(value as string | number),
     Стаж: (value) => validateExperience(value as string | number | undefined),
     ЗаработнаяПлата: (value) => validateSalary(Number(value)),
     КонтактныйТелефон: () =>
       validatePhoneNumber(formState.КонтактныйТелефон, existingPhones),
     УровеньОбразования: (value) => validateEducationLevel(value as string),
+    КодОтдела: (value) => {
+      const isDuplicate = employees.some(
+        (employee) =>
+          employee.ФИО === formState.ФИО && employee.КодОтдела === value
+      );
+      return isDuplicate
+        ? "Сотрудник с такой фамилией и отделом уже существует"
+        : null;
+    },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -88,6 +98,7 @@ export const CreateAnEmployeeForm = ({
             key: department.КодОтдела.toString(),
           })) || []
         }
+        error={errors.КодОтдела || ""}
       />
       <Input
         type="text"

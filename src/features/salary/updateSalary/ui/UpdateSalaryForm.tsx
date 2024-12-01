@@ -7,9 +7,9 @@ import { SalaryRecord, useUpdateSalaryMutation } from "@/entities/salary";
 import {
   validatePaymentDate,
   validateAmount,
+  validatePaymentType,
 } from "../../createSalary/model/validateSalaryForm";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
-import { validateName } from "@/shared/lib/validate";
 
 export const UpdateSalaryForm = ({
   salary,
@@ -32,7 +32,7 @@ export const UpdateSalaryForm = ({
   >({
     ДатаВыплаты: () => validatePaymentDate(formState.ДатаВыплаты),
     Сумма: () => validateAmount(formState.Сумма?.toString() || ""),
-    ТипВыплаты: () => validateName(formState.ТипВыплаты),
+    ТипВыплаты: () => validatePaymentType(formState.ТипВыплаты),
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

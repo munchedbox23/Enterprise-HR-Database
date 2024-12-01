@@ -9,6 +9,8 @@ import {
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { useGetEmployeesQuery } from "@/entities/employee";
+import { validateNumberOfUnits, validateSalary } from "@/shared/lib/validate";
+import { useValidation } from "@/shared/lib/hooks/useValidate";
 
 export const CreateStaffingForm = ({
   onStaffingAdded,
@@ -29,9 +31,16 @@ export const CreateStaffingForm = ({
   const { data: departments = [] } = useGetDepartmentQuery();
   const { data: employees = [] } = useGetEmployeesQuery();
 
+  const { errors, validateForm } = useValidation<
+    Pick<StaffingRecord, "КоличествоЕдиниц" | "Оклад">
+  >({
+    КоличествоЕдиниц: (value) => validateNumberOfUnits(Number(value)),
+    Оклад: (value) => validateSalary(Number(value)),
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (!validateForm(formState)) return;
     await addStaffing({
       ...formState,
       Оклад: Number(formState.Оклад),
@@ -63,13 +72,11 @@ export const CreateStaffingForm = ({
       <CustomSelect
         label="Должность"
         name="Должность"
-        options={
-          employees?.map((employee) => ({
-            value: employee.Должность.toString(),
-            label: employee.Должность.toString(),
-            key: employee.Должность
-          }))
-        }
+        options={employees?.map((employee) => ({
+          value: employee.Должность.toString(),
+          label: employee.Должность.toString(),
+          key: employee.Должность,
+        }))}
         value={formState.Должность}
         onChange={handleChange}
       />
@@ -81,6 +88,8 @@ export const CreateStaffingForm = ({
         onChange={handleChange}
         inputProps={{ min: 1 }}
         fullWidth
+        error={!!errors.КоличествоЕдиниц}
+        helperText={errors.КоличествоЕдиниц}
       />
       <Input
         type="number"
@@ -90,6 +99,8 @@ export const CreateStaffingForm = ({
         onChange={handleChange}
         inputProps={{ min: 1 }}
         fullWidth
+        error={!!errors.Оклад}
+        helperText={errors.Оклад}
       />
     </BaseForm>
   );

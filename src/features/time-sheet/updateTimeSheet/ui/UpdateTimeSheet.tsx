@@ -93,7 +93,7 @@ export const UpdateTimeSheetForm = ({
         name="КоличествоОтработанныхЧасов"
         value={formState.КоличествоОтработанныхЧасов}
         onChange={handleChange}
-        inputProps={{ min: 1 }}
+        inputProps={{ min: 1, max: 180 }}
         fullWidth
         error={!!errors.КоличествоОтработанныхЧасов}
         helperText={errors.КоличествоОтработанныхЧасов}

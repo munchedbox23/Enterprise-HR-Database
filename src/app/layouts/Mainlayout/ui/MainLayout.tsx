@@ -57,7 +57,9 @@ export const MainLayout = () => {
       >
         <ModalProvider>
           <Suspense fallback={<Hourglass />}>
-            <Box style={{ position: "relative", height: "100%", width: "100%" }}>
+            <Box
+              style={{ position: "relative", height: "100%", width: "100%" }}
+            >
               <Outlet />
             </Box>
           </Suspense>

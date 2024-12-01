@@ -8,6 +8,7 @@ import { useGetEmployeesQuery } from "@/entities/employee";
 import {
   validatePaymentDate,
   validateAmount,
+  validatePaymentType,
 } from "../model/validateSalaryForm";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 import { validateName } from "@/shared/lib/validate";
@@ -35,7 +36,7 @@ export const CreateSalaryForm = ({
   >({
     ДатаВыплаты: () => validatePaymentDate(formState.ДатаВыплаты),
     Сумма: () => validateAmount(formState.Сумма?.toString() || ""),
-    ТипВыплаты: () => validateName(formState.ТипВыплаты),
+    ТипВыплаты: () => validatePaymentType(formState.ТипВыплаты),
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

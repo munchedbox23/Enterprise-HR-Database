@@ -36,10 +36,24 @@ function validateEducationLevel(level: string): string | null {
     : "Введите корректный уровень образования";
 }
 
+function validateFullName(fullName: string): string | null {
+  if (!fullName) {
+    return "ФИО не может быть пустым.";
+  }
+  if (fullName.length < 3) {
+    return "ФИО должно содержать не менее 3 символов.";
+  }
+  if (!/^[а-яА-ЯёЁ\s]+$/.test(fullName)) {
+    return "ФИО должно содержать только русские буквы и пробелы.";
+  }
+  return null;
+}
+
 export {
   validatePosition,
   validateExperience,
   validatePhoneNumber,
   validateSalary,
   validateEducationLevel,
+  validateFullName,
 };

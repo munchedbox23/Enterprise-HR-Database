@@ -14,6 +14,7 @@ interface CustomSelectProps {
   options: { value: string; label: string; key: string | number }[];
   onChange: (event: SelectChangeEvent<string>) => void;
   width?: string;
+  error?: string | null;
 }
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -23,6 +24,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   options,
   onChange,
   width = "100%",
+  error,
 }) => {
   return (
     <FormControl
@@ -48,6 +50,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         onChange={onChange}
         label={label}
         fullWidth
+        required
+        error={!!error}
         MenuProps={{
           PaperProps: {
             style: {
