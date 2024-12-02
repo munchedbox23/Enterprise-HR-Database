@@ -111,7 +111,7 @@ export const VacationPage = () => {
             justifyContent="flex-end"
             sx={{ marginBottom: 2 }}
           >
-            <CreateAnEntity title="Создать отпуск">
+            <CreateAnEntity title="Создать отпуск" tableType="отпуска">
               <CreateVacationForm
                 onSuccess={handleOpenSnackbar}
                 onVacationAddedError={handleOpenSnackbarError}

@@ -5,10 +5,12 @@ import { Input } from "@/shared/ui/Input";
 import { useAddDepartmentMutation } from "../../api/departmentApi";
 import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useModalContext";
 import MaskedInput from "react-text-mask";
-import { validateDepartmentName } from "../model/validateDepartmentForm";
 import { useGetDepartmentQuery } from "@/entities/staffing";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
-import { validatePhoneNumber } from "@/shared/lib/validate";
+import {
+  validatePhoneNumber,
+  validateDepartmentName,
+} from "@/shared/lib/validate";
 
 export const CreateDepartmentForm = ({
   onDepartmentAdded,
@@ -35,7 +37,11 @@ export const CreateDepartmentForm = ({
   const { errors, validateForm } = useValidation<
     Omit<DepartmentRecord, "КодОтдела">
   >({
-    НазваниеОтдела: () => validateDepartmentName(formState.НазваниеОтдела),
+    НазваниеОтдела: () =>
+      validateDepartmentName(
+        formState.НазваниеОтдела,
+        departments.map((dept) => dept.НазваниеОтдела)
+      ),
     КонтактныйТелефон: () =>
       validatePhoneNumber(formState.КонтактныйТелефон, existingPhones),
   });

@@ -11,6 +11,7 @@ import { useModalContext } from "@/app/providers/ModalProvider/config/lib/useMod
 import {
   validateWorkedHours,
   validateDate,
+  validateTotalMonthHours,
 } from "../model/validateTimeSheetForm";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 
@@ -33,7 +34,7 @@ export const CreateTimeSheetForm = ({
   const { data: employees = [] } = useGetEmployeesQuery();
   const { closeModal } = useModalContext();
 
-  const { errors, validateForm } = useValidation<
+  const { errors, validateForm, setErrors } = useValidation<
     Omit<TimeSheetRecord, "НомерЗаписи" | "Id">
   >({
     Дата: () => validateDate(formState.Дата),
@@ -44,6 +45,18 @@ export const CreateTimeSheetForm = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm(formState)) return;
+    
+    const monthHoursError = await validateTotalMonthHours(
+      Number(formState.КоличествоОтработанныхЧасов),
+      formState.Дата,
+      Number(formState.IdСотрудника)
+    );
+    
+    if (monthHoursError) {
+      setErrors(prev => ({ ...prev, КоличествоОтработанныхЧасов: monthHoursError }));
+      return;
+    }
+
     try {
       await addTimeSheet({
         ...formState,
@@ -93,7 +106,7 @@ export const CreateTimeSheetForm = ({
         name="КоличествоОтработанныхЧасов"
         value={formState.КоличествоОтработанныхЧасов}
         onChange={handleChange}
-        inputProps={{ min: 1, max: 180 }}
+        inputProps={{ min: 1 }}
         fullWidth
         error={!!errors.КоличествоОтработанныхЧасов}
         helperText={errors.КоличествоОтработанныхЧасов}

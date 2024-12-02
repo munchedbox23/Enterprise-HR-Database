@@ -33,7 +33,8 @@ export const UpdateSalaryForm = ({
     Omit<SalaryRecord, "НомерЗаписи" | "IdСотрудника">
   >({
     ДатаВыплаты: () => validatePaymentDate(formState.ДатаВыплаты),
-    Сумма: () => validateAmount(formState.Сумма?.toString() || ""),
+    Сумма: () =>
+      validateAmount(formState.Сумма?.toString() || "", formState.ТипВыплаты),
     ТипВыплаты: () => validatePaymentType(formState.ТипВыплаты),
   });
 
@@ -48,8 +49,7 @@ export const UpdateSalaryForm = ({
           Сумма: Number(formState.Сумма),
         },
         id: salary.НомерЗаписи.toString(),
-      })
-        .unwrap();
+      }).unwrap();
       onSuccess();
     } catch (error) {
       onSalaryUpdatedError();
@@ -90,7 +90,7 @@ export const UpdateSalaryForm = ({
         name="Сумма"
         value={formState.Сумма?.toString() || ""}
         onChange={handleChange}
-        inputProps={{ min: 0 }}
+        inputProps={{ min: 1 }}
         fullWidth
         error={!!errors.Сумма}
         helperText={errors.Сумма}

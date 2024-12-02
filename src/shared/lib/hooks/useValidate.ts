@@ -6,9 +6,9 @@ type ValidationErrors<T> = {
 
 type Validator<T> = (value: T[keyof T]) => string | null;
 
-export const useValidation = <T extends Record<string, any>>(
-  validators: { [K in keyof T]: Validator<T> }
-) => {
+export const useValidation = <T extends Record<string, any>>(validators: {
+  [K in keyof T]: Validator<T>;
+}) => {
   const [errors, setErrors] = useState<ValidationErrors<T>>({});
 
   const validateForm = (formState: T): boolean => {
@@ -25,5 +25,5 @@ export const useValidation = <T extends Record<string, any>>(
     return Object.keys(newErrors).length === 0;
   };
 
-  return { errors, validateForm };
+  return { errors, validateForm, setErrors };
 };

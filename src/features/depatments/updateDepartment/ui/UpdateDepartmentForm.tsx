@@ -4,10 +4,12 @@ import { Input } from "@/shared/ui/Input";
 import { useUpdateDepartmentMutation } from "@/features/depatments/api/departmentApi";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 import { DepartmentRecord, useGetDepartmentQuery } from "@/entities/staffing";
-import { validatePhoneNumber } from "@/shared/lib/validate";
+import {
+  validatePhoneNumber,
+  validateDepartmentName,
+} from "@/shared/lib/validate";
 import { DepartmentValueTypes } from "@/entities/staffing";
 import MaskedInput from "react-text-mask";
-import { validateDepartmentName } from "../../createDepartment/model/validateDepartmentForm";
 
 export const UpdateDepartmentForm = ({
   department,
@@ -32,10 +34,15 @@ export const UpdateDepartmentForm = ({
     (department) => department.КонтактныйТелефон
   );
 
+  const existingDepartmentNames = departments
+    .filter((dept) => dept.КодОтдела.toString() !== department[0].toString())
+    .map((dept) => dept.НазваниеОтдела);
+
   const { errors, validateForm } = useValidation<
     Omit<DepartmentRecord, "КодОтдела">
   >({
-    НазваниеОтдела: () => validateDepartmentName(formState.НазваниеОтдела),
+    НазваниеОтдела: () =>
+      validateDepartmentName(formState.НазваниеОтдела, existingDepartmentNames),
     КонтактныйТелефон: () =>
       validatePhoneNumber(formState.КонтактныйТелефон, existingPhones),
   });

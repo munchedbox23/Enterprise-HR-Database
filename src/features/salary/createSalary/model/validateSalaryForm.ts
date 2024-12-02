@@ -1,8 +1,13 @@
-function validateAmount(amount: string): string | null {
+function validateAmount(amount: string, paymentType?: string): string | null {
   const parsedAmount = parseFloat(amount);
   if (isNaN(parsedAmount) || parsedAmount <= 0) {
     return "Сумма должна быть положительным числом";
   }
+  
+  if (paymentType === "Заработная плата" && parsedAmount < 19242) {
+    return "Заработная плата не может быть меньше МРОТ (19 242 руб.)";
+  }
+  
   return null;
 }
 

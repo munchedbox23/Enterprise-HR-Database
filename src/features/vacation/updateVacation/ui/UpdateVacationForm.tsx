@@ -8,6 +8,7 @@ import {
   validateStartDate,
   validateEndDate,
   validateVacationType,
+  validateVacationDuration,
 } from "../../createVacataion/model/validateVacationForm";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 
@@ -27,12 +28,22 @@ export const UpdateVacationForm = ({
   const [updateVacation, { isLoading }] = useUpdateVacationMutation();
   const { data: employees = [] } = useGetEmployeesQuery();
 
-  const { errors, validateForm } = useValidation<
+  const { errors, validateForm, setErrors } = useValidation<
     Omit<Vacation, "НомерЗаписи" | "IdСотрудника">
   >({
     ДатаНачала: () => validateStartDate(formState.ДатаНачала),
-    ДатаОкончания: () =>
-      validateEndDate(formState.ДатаНачала, formState.ДатаОкончания),
+    ДатаОкончания: () => {
+      const endDateError = validateEndDate(
+        formState.ДатаНачала,
+        formState.ДатаОкончания
+      );
+      if (endDateError) return endDateError;
+
+      return validateVacationDuration(
+        formState.ДатаНачала,
+        formState.ДатаОкончания
+      );
+    },
     Тип: () => validateVacationType(formState.Тип),
   });
 

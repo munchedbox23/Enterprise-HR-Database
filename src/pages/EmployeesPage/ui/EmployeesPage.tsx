@@ -6,10 +6,11 @@ import { CreateAnEmployeeForm } from "@/features/employee/createAnEmployee";
 import { useSnackbar } from "@/shared/lib/hooks/useSnackbar";
 import { NotificationSnackbar } from "@/shared/ui/NotificationSnackbar.tsx";
 import { EditAnEntity } from "@/features/common/EditAnEntity";
+import { useEffect } from "react";
 import { UpdateAnEmployeeForm } from "@/features/employee/updateAnEmployee";
 
 export const EmployeesPage = () => {
-  const { data = [], isLoading } = useGetEmployeesQuery();
+  const { data = [], isLoading, refetch } = useGetEmployeesQuery();
   const {
     openSnackbar,
     handleCloseSnackbar,
@@ -48,6 +49,10 @@ export const EmployeesPage = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <>

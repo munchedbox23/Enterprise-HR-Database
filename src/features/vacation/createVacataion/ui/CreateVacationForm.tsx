@@ -9,11 +9,11 @@ import { BaseForm } from "@/shared/ui/BaseForm";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
 import { useGetEmployeesQuery } from "@/entities/employee";
 import { Input } from "@/shared/ui/Input";
-import { Typography } from "@mui/material";
 import {
   validateStartDate,
   validateEndDate,
   validateVacationType,
+  validateVacationDuration,
 } from "../model/validateVacationForm";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 
@@ -35,12 +35,16 @@ export const CreateVacationForm = ({
   const { closeModal } = useModalContext();
   const { data: vacations = [] } = useGetVacationsQuery();
 
-  const { errors, validateForm } = useValidation<
+  const { errors, validateForm, setErrors } = useValidation<
     Omit<Vacation, "НомерЗаписи" | "IdСотрудника">
   >({
     ДатаНачала: () => validateStartDate(formState.ДатаНачала),
-    ДатаОкончания: () =>
-      validateEndDate(formState.ДатаНачала, formState.ДатаОкончания),
+    ДатаОкончания: () => {
+      const endDateError = validateEndDate(formState.ДатаНачала, formState.ДатаОкончания);
+      if (endDateError) return endDateError;
+
+      return validateVacationDuration(formState.ДатаНачала, formState.ДатаОкончания);
+    },
     Тип: () => validateVacationType(formState.Тип),
   });
 
@@ -48,7 +52,9 @@ export const CreateVacationForm = ({
     startDate: string,
     endDate: string,
     employeeId: number
-  ) => {
+  ): boolean => {
+    if (!employeeId) return false;
+
     return vacations.some(
       (vacation) =>
         vacation.IdСотрудника === employeeId &&
@@ -59,15 +65,23 @@ export const CreateVacationForm = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (
-      !validateForm(formState) ||
-      isVacationOverlap(
-        formState.ДатаНачала,
-        formState.ДатаОкончания,
-        Number(formState.IdСотрудника)
-      )
-    )
+
+    const hasOverlap = isVacationOverlap(
+      formState.ДатаНачала,
+      formState.ДатаОкончания,
+      Number(formState.IdСотрудника)
+    );
+
+    if (hasOverlap) {
+      setErrors({
+        ...errors,
+        ДатаНачала: "Сотрудник уже находится в отпуске в этот период",
+      });
       return;
+    }
+
+    if (!validateForm(formState)) return;
+
     try {
       await addVacation({
         ...formState,
@@ -86,57 +100,47 @@ export const CreateVacationForm = ({
       onSubmit={handleSubmit}
       isLoading={isLoading}
     >
-      {isVacationOverlap(
-        formState.ДатаНачала,
-        formState.ДатаОкончания,
-        Number(formState.IdСотрудника)
-      ) ? (
-        <Typography>Пересечение с другим отпуском</Typography>
-      ) : (
-        <>
-          <CustomSelect
-            label="Сотрудник"
-            name="IdСотрудника"
-            value={formState.IdСотрудника?.toString() || ""}
-            onChange={handleChange}
-            options={employees.map((employee) => ({
-              label: `${employee.ФИО} - ${employee.IdСотрудника}`,
-              value: employee.IdСотрудника.toString() || "",
-              key: employee.IdСотрудника.toString(),
-            }))}
-          />
-          <Input
-            type="date"
-            label=""
-            name="ДатаНачала"
-            value={formState.ДатаНачала}
-            onChange={handleChange}
-            fullWidth
-            error={!!errors.ДатаНачала}
-            helperText={errors.ДатаНачала}
-          />
-          <Input
-            type="date"
-            label=""
-            name="ДатаОкончания"
-            value={formState.ДатаОкончания}
-            onChange={handleChange}
-            fullWidth
-            error={!!errors.ДатаОкончания}
-            helperText={errors.ДатаОкончания}
-          />
-          <Input
-            type="text"
-            label="Тип отпуска"
-            name="Тип"
-            value={formState.Тип}
-            onChange={handleChange}
-            fullWidth
-            error={!!errors.Тип}
-            helperText={errors.Тип}
-          />
-        </>
-      )}
+      <CustomSelect
+        label="Сотрудник"
+        name="IdСотрудника"
+        value={formState.IdСотрудника?.toString() || ""}
+        onChange={handleChange}
+        options={employees.map((employee) => ({
+          label: `${employee.ФИО} - ${employee.IdСотрудника}`,
+          value: employee.IdСотрудника.toString() || "",
+          key: employee.IdСотрудника.toString(),
+        }))}
+      />
+      <Input
+        type="date"
+        label=""
+        name="ДатаНачала"
+        value={formState.ДатаНачала}
+        onChange={handleChange}
+        fullWidth
+        error={!!errors.ДатаНачала}
+        helperText={errors.ДатаНачала}
+      />
+      <Input
+        type="date"
+        label=""
+        name="ДатаОкончания"
+        value={formState.ДатаОкончания}
+        onChange={handleChange}
+        fullWidth
+        error={!!errors.ДатаОкончания}
+        helperText={errors.ДатаОкончания}
+      />
+      <Input
+        type="text"
+        label="Тип отпуска"
+        name="Тип"
+        value={formState.Тип}
+        onChange={handleChange}
+        fullWidth
+        error={!!errors.Тип}
+        helperText={errors.Тип}
+      />
     </BaseForm>
   );
 };
