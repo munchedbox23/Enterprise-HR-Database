@@ -1,4 +1,5 @@
 function validateStartDate(startDate: string): string | null {
+  if (!startDate) return "Дата начала не должна быть пустой";
   const currentDate = new Date().toISOString().split("T")[0];
   return startDate >= currentDate
     ? null
@@ -6,6 +7,7 @@ function validateStartDate(startDate: string): string | null {
 }
 
 function validateEndDate(startDate: string, endDate: string): string | null {
+  if (!endDate) return "Дата окончания не должна быть пустой";
   return endDate >= startDate
     ? null
     : "Дата окончания должна быть позже даты начала или совпадать с ней";

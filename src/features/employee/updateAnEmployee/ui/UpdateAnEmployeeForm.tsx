@@ -9,6 +9,7 @@ import { Input } from "@/shared/ui/Input";
 import { CustomSelect } from "@/shared/ui/CustomSelect";
 import MaskedInput from "react-text-mask";
 import { useGetDepartmentQuery } from "@/entities/staffing";
+import { useGetEmployeesQuery } from "@/entities/employee";
 import { useValidation } from "@/shared/lib/hooks/useValidate";
 import {
   validateEducationLevel,
@@ -49,7 +50,12 @@ export const UpdateAnEmployeeForm = ({
     УровеньОбразования,
   });
   const { data: departments } = useGetDepartmentQuery();
+  const { data: employees = [] } = useGetEmployeesQuery();
   const [updateEmployee, { isLoading }] = useUpdateEmployeeMutation();
+
+  const existingPhones = employees
+    .filter((emp) => emp.IdСотрудника !== IdСотрудника)
+    .map((emp) => emp.КонтактныйТелефон);
 
   const { errors, validateForm } = useValidation<
     Omit<Employee, "IdСотрудника" | "КодОтдела">
@@ -58,8 +64,9 @@ export const UpdateAnEmployeeForm = ({
     Должность: (value) => validatePosition(value as string | number),
     Стаж: (value) => validateExperience(value as string | number | undefined),
     КонтактныйТелефон: () =>
-      validatePhoneNumber(formState.КонтактныйТелефон, []),
-    ЗаработнаяПлата: (value) => validateSalary(Number(value)),
+      validatePhoneNumber(formState.КонтактныйТелефон, existingPhones),
+    ЗаработнаяПлата: (value) =>
+      validateSalary(value as string, "Заработная плата"),
     УровеньОбразования: (value) => validateEducationLevel(value as string),
   });
 

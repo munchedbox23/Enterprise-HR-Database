@@ -1,4 +1,7 @@
 function validateDate(date: string): string | null {
+  if (!date.trim()) {
+    return "Дата не может быть пустой";
+  }
   const currentDate = new Date().toISOString().split("T")[0];
   return date >= currentDate ? null : "Дата должна быть в будущем";
 }

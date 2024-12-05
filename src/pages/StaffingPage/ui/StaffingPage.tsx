@@ -22,7 +22,7 @@ export const StaffingPage = () => {
 
   const columns = [
     { name: "IdРасписания", label: "ID Расписания" },
-    { name: "КодОтдела", label: "Код Отдела" },
+    { name: "КодОтдела", label: "Отдел" },
     { name: "Должность", label: "Должность" },
     { name: "КоличествоЕдиниц", label: "Количество Единиц" },
     { name: "Оклад", label: "Оклад" },

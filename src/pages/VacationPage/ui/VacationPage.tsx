@@ -152,7 +152,7 @@ export const VacationPage = () => {
           <NotificationSnackbar
             open={openSnackbar}
             onClose={handleCloseSnackbar}
-            message="Запись успешно выполнена"
+            message="Операция выполнена успешно"
             severity="success"
           />
           <NotificationSnackbar

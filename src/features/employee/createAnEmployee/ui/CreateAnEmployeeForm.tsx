@@ -52,7 +52,8 @@ export const CreateAnEmployeeForm = ({
     ФИО: (value) => validateFullName(value as string),
     Должность: (value) => validatePosition(value as string | number),
     Стаж: (value) => validateExperience(value as string | number | undefined),
-    ЗаработнаяПлата: (value) => validateSalary(Number(value)),
+    ЗаработнаяПлата: (value) =>
+      validateSalary(value as string, "Заработная плата"),
     КонтактныйТелефон: () =>
       validatePhoneNumber(formState.КонтактныйТелефон, existingPhones),
     УровеньОбразования: (value) => validateEducationLevel(value as string),

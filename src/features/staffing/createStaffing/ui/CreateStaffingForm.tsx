@@ -91,7 +91,7 @@ export const CreateStaffingForm = ({
         name="КоличествоЕдиниц"
         value={formState.КоличествоЕдиниц}
         onChange={handleChange}
-        inputProps={{ min: 1, max: 2 }}
+        inputProps={{ min: 1, max: 5 }}
         fullWidth
         error={!!errors.КоличествоЕдиниц}
         helperText={errors.КоличествоЕдиниц}

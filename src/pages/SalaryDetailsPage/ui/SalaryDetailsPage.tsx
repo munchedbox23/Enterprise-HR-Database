@@ -1,6 +1,6 @@
 import { useGetSalaryQuery } from "@/entities/salary/api/salaryApi";
 import { SalaryCard } from "@/entities/salary";
-import { Container, Stack } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
 import { SkeletonItem } from "@/shared/ui/Skeleton";
 import { GroupOfItem } from "@/widgets/GroupOfItem";
 import { CreateAnEntity } from "@/features/common/CreateAnEntity";
@@ -138,23 +138,29 @@ export const SalaryDetailsPage = () => {
               setFilteredSalaries={setFilteredSalary}
             />
           </Stack>
-          <GroupOfItem
-            direction="column"
-            items={filteredSalary}
-            renderItem={(salary) => (
-              <SalaryCard salary={salary}>
-                <EditAnEntity title="Редактировать выплату">
-                  <UpdateSalaryForm
-                    salary={salary}
-                    onSuccess={handleOpenSnackbar}
-                    onSalaryUpdatedError={handleOpenSnackbarError}
-                  />
-                </EditAnEntity>
-              </SalaryCard>
-            )}
-            getKey={(salary) => salary.НомерЗаписи}
-            width="60%"
-          />
+          {filteredSalary.length > 0 ? (
+            <GroupOfItem
+              direction="column"
+              items={filteredSalary}
+              renderItem={(salary) => (
+                <SalaryCard salary={salary}>
+                  <EditAnEntity title="Редактировать выплату">
+                    <UpdateSalaryForm
+                      salary={salary}
+                      onSuccess={handleOpenSnackbar}
+                      onSalaryUpdatedError={handleOpenSnackbarError}
+                    />
+                  </EditAnEntity>
+                </SalaryCard>
+              )}
+              getKey={(salary) => salary.НомерЗаписи}
+              width="60%"
+            />
+          ) : (
+            <Typography align="center" variant="h6" color="textSecondary">
+              Нет данных по вашему запросу
+            </Typography>
+          )}
           <NotificationSnackbar
             open={openSnackbar}
             onClose={handleCloseSnackbar}

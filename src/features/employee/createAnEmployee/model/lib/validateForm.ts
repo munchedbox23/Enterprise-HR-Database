@@ -22,13 +22,18 @@ function validatePhoneNumber(phone: string): string | null {
   const phoneRegex = /^[0-9]{11}$/;
   return phoneRegex.test(phone) ? null : "Введите корректный номер телефона";
 }
+function validateSalary(amount: string, paymentType?: string): string | null {
+  const parsedAmount = parseFloat(amount);
+  if (isNaN(parsedAmount) || parsedAmount <= 0) {
+    return "Сумма должна быть положительным числом";
+  }
 
-function validateSalary(salary: number): string | null {
-  return typeof salary === "number" && salary > 0
-    ? null
-    : "Введите корректную зарплату";
+  if (paymentType === "Заработная плата" && parsedAmount < 19242) {
+    return "Заработная плата не может быть меньше МРОТ (19 242 руб.)";
+  }
+
+  return null;
 }
-
 function validateEducationLevel(level: string): string | null {
   const validLevels = ["среднее", "высшее"];
   return validLevels.includes(level)
